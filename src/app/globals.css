@@ -1,0 +1,236 @@
+@import "tailwindcss";
+
+@layer base, theme, components, utilities;
+
+@layer theme {
+  :root {
+    --bg-light: #f8fafc;
+    --bg-dark: #090d16;
+    --surface-light: #ffffff;
+    --surface-dark: #111827;
+    --surface-elevated-light: #f1f5f9;
+    --surface-elevated-dark: #1e293b;
+    --fg-light: #0f172a;
+    --fg-dark: #f8fafc;
+    --muted-light: #475569;
+    --muted-dark: #94a3b8;
+    --border-light: rgba(15, 23, 42, 0.12);
+    --border-dark: rgba(248, 250, 252, 0.12);
+
+    --accent-light: #059669;
+    --accent-dark: #10b981;
+    --accent-hover-light: #047857;
+    --accent-hover-dark: #34d399;
+    --accent-soft-light: rgba(5, 150, 105, 0.12);
+    --accent-soft-dark: rgba(16, 185, 129, 0.16);
+    --accent-glow: rgba(16, 185, 129, 0.28);
+    --accent-fg-light: #ffffff;
+    --accent-fg-dark: #042f2e;
+
+    --background: var(--bg-light);
+    --surface: var(--surface-light);
+    --surface-elevated: var(--surface-elevated-light);
+    --foreground: var(--fg-light);
+    --muted: var(--muted-light);
+    --border: var(--border-light);
+    --accent: var(--accent-light);
+    --accent-hover: var(--accent-hover-light);
+    --accent-soft: var(--accent-soft-light);
+    --accent-foreground: var(--accent-fg-light);
+
+    --scrollbar-track: #f1f5f9;
+    --scrollbar-thumb: #94a3b8;
+
+    @media (prefers-color-scheme: dark) {
+      --background: var(--bg-dark);
+      --surface: var(--surface-dark);
+      --surface-elevated: var(--surface-elevated-dark);
+      --foreground: var(--fg-dark);
+      --muted: var(--muted-dark);
+      --border: var(--border-dark);
+      --accent: var(--accent-dark);
+      --accent-hover: var(--accent-hover-dark);
+      --accent-soft: var(--accent-soft-dark);
+      --accent-foreground: var(--accent-fg-dark);
+      --scrollbar-track: #0f172a;
+      --scrollbar-thumb: #475569;
+    }
+
+    &:is([data-theme="light"], :has(> head > meta[name="color-scheme"][content="light"])) {
+      color-scheme: light;
+      --background: var(--bg-light);
+      --surface: var(--surface-light);
+      --surface-elevated: var(--surface-elevated-light);
+      --foreground: var(--fg-light);
+      --muted: var(--muted-light);
+      --border: var(--border-light);
+      --accent: var(--accent-light);
+      --accent-hover: var(--accent-hover-light);
+      --accent-soft: var(--accent-soft-light);
+      --accent-foreground: var(--accent-fg-light);
+      --scrollbar-track: #f1f5f9;
+      --scrollbar-thumb: #94a3b8;
+    }
+
+    &:is([data-theme="dark"], :has(> head > meta[name="color-scheme"][content="dark"])) {
+      color-scheme: dark;
+      --background: var(--bg-dark);
+      --surface: var(--surface-dark);
+      --surface-elevated: var(--surface-elevated-dark);
+      --foreground: var(--fg-dark);
+      --muted: var(--muted-dark);
+      --border: var(--border-dark);
+      --accent: var(--accent-dark);
+      --accent-hover: var(--accent-hover-dark);
+      --accent-soft: var(--accent-soft-dark);
+      --accent-foreground: var(--accent-fg-dark);
+      --scrollbar-track: #0f172a;
+      --scrollbar-thumb: #475569;
+    }
+
+    @supports (color: light-dark(white, black)) {
+      --background: light-dark(var(--bg-light), var(--bg-dark));
+      --surface: light-dark(var(--surface-light), var(--surface-dark));
+      --surface-elevated: light-dark(var(--surface-elevated-light), var(--surface-elevated-dark));
+      --foreground: light-dark(var(--fg-light), var(--fg-dark));
+      --muted: light-dark(var(--muted-light), var(--muted-dark));
+      --border: light-dark(var(--border-light), var(--border-dark));
+      --accent: light-dark(var(--accent-light), var(--accent-dark));
+      --accent-hover: light-dark(var(--accent-hover-light), var(--accent-hover-dark));
+      --accent-soft: light-dark(var(--accent-soft-light), var(--accent-soft-dark));
+      --accent-foreground: light-dark(var(--accent-fg-light), var(--accent-fg-dark));
+      --scrollbar-track: light-dark(#f1f5f9, #0f172a);
+      --scrollbar-thumb: light-dark(#94a3b8, #475569);
+    }
+
+    &[data-accent="emerald"] {
+      --accent-light: #059669;
+      --accent-dark: #10b981;
+      --accent-hover-light: #047857;
+      --accent-hover-dark: #34d399;
+      --accent-soft-light: rgba(5, 150, 105, 0.12);
+      --accent-soft-dark: rgba(16, 185, 129, 0.16);
+      --accent-glow: rgba(16, 185, 129, 0.28);
+      --accent-fg-light: #ffffff;
+      --accent-fg-dark: #042f2e;
+    }
+
+    &[data-accent="blue"] {
+      --accent-light: #2563eb;
+      --accent-dark: #3b82f6;
+      --accent-hover-light: #1d4ed8;
+      --accent-hover-dark: #60a5fa;
+      --accent-soft-light: rgba(37, 99, 235, 0.12);
+      --accent-soft-dark: rgba(59, 130, 246, 0.16);
+      --accent-glow: rgba(59, 130, 246, 0.28);
+      --accent-fg-light: #ffffff;
+      --accent-fg-dark: #082f49;
+    }
+
+    &:is([data-accent="purple"], [data-accent="violet"]) {
+      --accent-light: #7c3aed;
+      --accent-dark: #8b5cf6;
+      --accent-hover-light: #6d28d9;
+      --accent-hover-dark: #a78bfa;
+      --accent-soft-light: rgba(124, 58, 237, 0.12);
+      --accent-soft-dark: rgba(139, 92, 246, 0.16);
+      --accent-glow: rgba(139, 92, 246, 0.28);
+      --accent-fg-light: #ffffff;
+      --accent-fg-dark: #1e1b4b;
+    }
+
+    &:is([data-accent="orange"], [data-accent="amber"]) {
+      --accent-light: #d97706;
+      --accent-dark: #f59e0b;
+      --accent-hover-light: #b45309;
+      --accent-hover-dark: #fbbf24;
+      --accent-soft-light: rgba(217, 119, 6, 0.12);
+      --accent-soft-dark: rgba(245, 158, 11, 0.16);
+      --accent-glow: rgba(245, 158, 11, 0.28);
+      --accent-fg-light: #ffffff;
+      --accent-fg-dark: #451a03;
+    }
+
+    @media (forced-colors: active) {
+      --background: Canvas;
+      --surface: Canvas;
+      --surface-elevated: Canvas;
+      --foreground: CanvasText;
+      --muted: GrayText;
+      --border: ButtonBorder;
+      --accent: Highlight;
+      --accent-hover: Highlight;
+      --accent-foreground: HighlightText;
+    }
+
+    color-scheme: light dark;
+    accent-color: var(--accent);
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-glow: var(--accent-glow);
+  --color-accent-foreground: var(--accent-foreground);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    transition: background-color 200ms ease, color 200ms ease;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background-color: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  :where(a:any-link, button):focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .visually-hidden:where(:not(:focus-within, :active)) {
+    position: absolute !important;
+    clip-path: inset(50%) !important;
+    overflow: hidden !important;
+    width: 1px !important;
+    height: 1px !important;
+    margin: -1px !important;
+    padding: 0 !important;
+    border: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  @supports not (scrollbar-color: auto) {
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--scrollbar-thumb);
+      border-radius: 9999px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--scrollbar-track);
+    }
+  }
+}
+
