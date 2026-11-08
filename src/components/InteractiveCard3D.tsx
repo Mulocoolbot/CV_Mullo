@@ -130,20 +130,31 @@ export function InteractiveCard3D() {
           />
         </div>
 
-        <div className="space-y-2">
-          <p className={`font-mono text-sm font-semibold ${currentAccent.text}`}>
-            @{profileData.handle}
-          </p>
-          <h2 className="text-2xl font-bold tracking-tight">
-            {profileData.name}
-          </h2>
-          <p className="inline-flex items-center gap-1.5 text-sm opacity-80">
-            <MapPin
-              aria-hidden="true"
-              className={`h-4 w-4 ${currentAccent.text}`}
+        <div className="flex items-center gap-4">
+          {profileData.avatarUrl && (
+            <img
+              src={profileData.avatarUrl}
+              alt=""
+              width={64}
+              height={64}
+              className={`h-16 w-16 shrink-0 rounded-2xl border ${currentAccent.border} object-cover object-top`}
             />
-            <span>{profileData.location}</span>
-          </p>
+          )}
+          <div className="space-y-1.5">
+            <p className={`font-mono text-sm font-semibold ${currentAccent.text}`}>
+              @{profileData.handle}
+            </p>
+            <h2 className="text-2xl font-bold tracking-tight">
+              {profileData.name}
+            </h2>
+            <p className="inline-flex items-center gap-1.5 text-sm opacity-80">
+              <MapPin
+                aria-hidden="true"
+                className={`h-4 w-4 ${currentAccent.text}`}
+              />
+              <span>{profileData.location}</span>
+            </p>
+          </div>
         </div>
 
         <div className="flex flex-wrap gap-2">

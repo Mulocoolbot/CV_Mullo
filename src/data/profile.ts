@@ -3,6 +3,8 @@ import type { ProfileData } from "@/types/cv";
 export const profileData: ProfileData = {
   name: "Ahmad Mulia Saputra",
   handle: "Mulocoolbot",
+  avatarUrl: "/images/profile-mullo.jpg",
+  cvPdfUrl: null,
   location: "Bandar Lampung, Indonesia",
   available: true,
   workTypes: ["Part-time", "Freelance"],

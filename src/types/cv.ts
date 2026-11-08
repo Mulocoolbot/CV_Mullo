@@ -12,6 +12,8 @@ export interface LocalizedText {
 export interface ProfileData {
   name: string;
   handle: string;
+  avatarUrl: string;
+  cvPdfUrl: string | null;
   location: string;
   available: boolean;
   workTypes: string[];
@@ -25,4 +27,27 @@ export interface ProfileData {
   coreStack: string[];
   exploringStack: string[];
   softSkills: string[];
+}
+
+export type ProjectCategory = "all" | "mobile" | "web" | "systems" | "ai-data";
+
+export interface ProjectItem {
+  id: string;
+  title: string;
+  category: Exclude<ProjectCategory, "all">;
+  categoryLabel: LocalizedText;
+  role: LocalizedText;
+  releaseStatus: LocalizedText;
+  isPublicRelease: boolean;
+  shortSummary: LocalizedText;
+  caseStudyProblem: LocalizedText;
+  technicalSolution: LocalizedText;
+  keyFeatures: {
+    id: string[];
+    en: string[];
+  };
+  techStack: string[];
+  githubUrl: string;
+  releaseUrl?: string;
+  screenshots: string[];
 }

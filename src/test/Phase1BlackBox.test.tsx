@@ -35,10 +35,10 @@ describe("Phase 1 Black Box Testing Suite", () => {
     expect(
       screen.getByText("Tersedia untuk Part-time & Freelance")
     ).toBeInTheDocument();
-    expect(screen.getByText("TypeScript")).toBeInTheDocument();
-    expect(screen.getByText("Kotlin")).toBeInTheDocument();
-    expect(screen.getByText("Laravel")).toBeInTheDocument();
-    expect(screen.getByText("Python")).toBeInTheDocument();
+    expect(screen.getAllByText("TypeScript").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Kotlin").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Laravel").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Python").length).toBeGreaterThan(0);
     expect(screen.getByText("Data Engineering")).toBeInTheDocument();
     expect(screen.getByText("AI Development")).toBeInTheDocument();
     expect(screen.getByText("Leadership")).toBeInTheDocument();
