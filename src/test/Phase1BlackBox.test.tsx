@@ -39,10 +39,10 @@ describe("Phase 1 Black Box Testing Suite", () => {
     expect(screen.getAllByText("Kotlin").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Laravel").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Python").length).toBeGreaterThan(0);
-    expect(screen.getByText("Data Engineering")).toBeInTheDocument();
-    expect(screen.getByText("AI Development")).toBeInTheDocument();
-    expect(screen.getByText("Leadership")).toBeInTheDocument();
-    expect(screen.getByText("Public Speaking")).toBeInTheDocument();
+    expect(screen.getAllByText("Data Engineering").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("AI Development").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Leadership").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Public Speaking").length).toBeGreaterThan(0);
   });
 
   it("tc_p1_02_language_toggle_switches_copywriting_between_id_and_en", () => {

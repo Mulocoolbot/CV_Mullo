@@ -55,3 +55,37 @@ export interface ProjectItem {
     en: string[];
   };
 }
+
+export type SkillCategory =
+  | "all"
+  | "frontend-mobile"
+  | "backend-db"
+  | "ai-data"
+  | "workflow-soft";
+
+export interface SkillItem {
+  id: string;
+  name: string;
+  category: Exclude<SkillCategory, "all">;
+  categoryLabel: LocalizedText;
+  levelBadge: LocalizedText;
+  description: LocalizedText;
+}
+
+export type TimelineCategory = "all" | "work" | "leadership" | "education";
+
+export interface TimelineItem {
+  id: string;
+  category: Exclude<TimelineCategory, "all">;
+  categoryLabel: LocalizedText;
+  roleOrDegree: LocalizedText;
+  organization: string;
+  location: string;
+  period: LocalizedText;
+  summary: LocalizedText;
+  highlights: {
+    id: string[];
+    en: string[];
+  };
+  tags: string[];
+}
