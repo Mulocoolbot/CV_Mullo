@@ -50,4 +50,8 @@ export interface ProjectItem {
   githubUrl: string;
   releaseUrl?: string;
   screenshots: string[];
+  screenshotCaptions: {
+    id: string[];
+    en: string[];
+  };
 }

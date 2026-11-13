@@ -3,11 +3,14 @@
 import { useMemo, useState } from "react";
 import {
   CheckCircle2,
+  ChevronLeft,
+  ChevronRight,
   Code2,
   ExternalLink,
   FolderGit2,
   Image as ImageIcon,
   Layers,
+  Maximize2,
   Sparkles,
   Tag,
   X,
@@ -23,6 +26,30 @@ export function PortfolioSection() {
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(
     null
   );
+  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+
+  const handleSelectProject = (project: ProjectItem | null) => {
+    setSelectedProject(project);
+    setActiveSlideIndex(0);
+    setIsLightboxOpen(false);
+  };
+
+  const handlePrevSlide = () => {
+    if (!selectedProject || selectedProject.screenshots.length === 0) {
+      return;
+    }
+    const total = selectedProject.screenshots.length;
+    setActiveSlideIndex((prev) => (prev - 1 + total) % total);
+  };
+
+  const handleNextSlide = () => {
+    if (!selectedProject || selectedProject.screenshots.length === 0) {
+      return;
+    }
+    const total = selectedProject.screenshots.length;
+    setActiveSlideIndex((prev) => (prev + 1) % total);
+  };
 
   const filteredProjects = useMemo(() => {
     if (activeCategory === "all") {
@@ -154,11 +181,22 @@ export function PortfolioSection() {
                     </span>
                   </div>
                 ) : (
-                  <img
-                    src={project.screenshots[0]}
-                    alt={project.title}
-                    className="mt-4 h-36 w-full rounded-xl object-cover"
-                  />
+                  <div className="relative mt-4 overflow-hidden rounded-xl border border-zinc-500/20">
+                    <img
+                      src={project.screenshots[0]}
+                      alt={project.title}
+                      data-testid={`project-thumb-${project.id}`}
+                      className="h-40 w-full object-cover object-top"
+                    />
+                    <span
+                      data-testid={`project-screen-count-${project.id}`}
+                      className="absolute bottom-2 right-2 rounded-full bg-zinc-950/80 px-2.5 py-0.5 font-mono text-[11px] font-semibold text-zinc-100 backdrop-blur-sm"
+                    >
+                      {`${project.screenshots.length} ${
+                        lang === "id" ? "Layar" : "Screens"
+                      }`}
+                    </span>
+                  </div>
                 )}
               </div>
 
@@ -192,7 +230,7 @@ export function PortfolioSection() {
               <button
                 type="button"
                 data-testid={`btn-case-study-${project.id}`}
-                onClick={() => setSelectedProject(project)}
+                onClick={() => handleSelectProject(project)}
                 className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl border ${currentAccent.border} px-3.5 py-2 text-xs font-semibold ${currentAccent.text} transition-colors hover:bg-zinc-500/10`}
               >
                 <Code2 aria-hidden="true" className="h-3.5 w-3.5" />
@@ -276,7 +314,7 @@ export function PortfolioSection() {
                 type="button"
                 data-testid="btn-close-modal"
                 aria-label={lang === "id" ? "Tutup modal" : "Close modal"}
-                onClick={() => setSelectedProject(null)}
+                onClick={() => handleSelectProject(null)}
                 className="rounded-xl border border-zinc-500/25 p-2 transition-colors hover:border-current"
               >
                 <X aria-hidden="true" className="h-5 w-5" />
@@ -284,6 +322,104 @@ export function PortfolioSection() {
             </div>
 
             <div className="mt-6 space-y-6">
+              {selectedProject.screenshots.length > 0 && (
+                <div
+                  data-testid="modal-screenshot-gallery"
+                  className={`space-y-3 rounded-2xl border p-4 ${blueprintSurface}`}
+                >
+                  <div className="relative overflow-hidden rounded-xl border border-zinc-500/20 bg-zinc-950">
+                    <img
+                      src={selectedProject.screenshots[activeSlideIndex]}
+                      alt={
+                        selectedProject.screenshotCaptions[lang][activeSlideIndex] ??
+                        selectedProject.title
+                      }
+                      data-testid="modal-active-screenshot"
+                      className="h-64 w-full object-contain sm:h-80"
+                    />
+
+                    <button
+                      type="button"
+                      data-testid="btn-prev-screen"
+                      aria-label={
+                        lang === "id" ? "Layar sebelumnya" : "Previous screen"
+                      }
+                      onClick={handlePrevSlide}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border border-zinc-500/30 bg-zinc-950/75 p-2 text-zinc-100 backdrop-blur-sm transition-colors hover:bg-zinc-900"
+                    >
+                      <ChevronLeft aria-hidden="true" className="h-4 w-4" />
+                    </button>
+
+                    <button
+                      type="button"
+                      data-testid="btn-next-screen"
+                      aria-label={lang === "id" ? "Layar berikutnya" : "Next screen"}
+                      onClick={handleNextSlide}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-zinc-500/30 bg-zinc-950/75 p-2 text-zinc-100 backdrop-blur-sm transition-colors hover:bg-zinc-900"
+                    >
+                      <ChevronRight aria-hidden="true" className="h-4 w-4" />
+                    </button>
+
+                    <button
+                      type="button"
+                      data-testid="btn-open-lightbox"
+                      aria-label={
+                        lang === "id" ? "Perbesar layar penuh" : "Open fullscreen"
+                      }
+                      onClick={() => setIsLightboxOpen(true)}
+                      className="absolute bottom-3 right-3 inline-flex items-center gap-1.5 rounded-lg border border-zinc-500/30 bg-zinc-950/75 px-2.5 py-1.5 font-mono text-xs text-zinc-100 backdrop-blur-sm transition-colors hover:bg-zinc-900"
+                    >
+                      <Maximize2 aria-hidden="true" className="h-3.5 w-3.5" />
+                      <span>
+                        {`${activeSlideIndex + 1} / ${
+                          selectedProject.screenshots.length
+                        }`}
+                      </span>
+                    </button>
+                  </div>
+
+                  <p
+                    data-testid="modal-active-caption"
+                    className="text-center text-xs font-medium opacity-85 sm:text-sm"
+                  >
+                    {selectedProject.screenshotCaptions[lang][activeSlideIndex]}
+                  </p>
+
+                  <div className="flex gap-2 overflow-x-auto pb-1">
+                    {selectedProject.screenshots.map((shot, idx) => {
+                      const isCurrent = idx === activeSlideIndex;
+                      return (
+                        <button
+                          key={shot}
+                          type="button"
+                          data-testid={`btn-thumb-${idx}`}
+                          aria-label={
+                            selectedProject.screenshotCaptions[lang][idx] ??
+                            `${selectedProject.title} ${idx + 1}`
+                          }
+                          aria-pressed={isCurrent}
+                          onClick={() => setActiveSlideIndex(idx)}
+                          className={`relative h-14 w-24 shrink-0 overflow-hidden rounded-lg border transition-all ${
+                            isCurrent
+                              ? `${currentAccent.border} ring-2 ${currentAccent.ring}`
+                              : "border-zinc-500/25 opacity-60 hover:opacity-100"
+                          }`}
+                        >
+                          <img
+                            src={shot}
+                            alt={
+                              selectedProject.screenshotCaptions[lang][idx] ??
+                              selectedProject.title
+                            }
+                            className="h-full w-full object-cover object-top"
+                          />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="rounded-2xl border border-zinc-500/20 p-4">
                   <h4
@@ -382,13 +518,69 @@ export function PortfolioSection() {
 
               <button
                 type="button"
-                onClick={() => setSelectedProject(null)}
+                onClick={() => handleSelectProject(null)}
                 className="rounded-xl border border-zinc-500/25 px-5 py-2.5 text-xs font-semibold transition-colors hover:bg-zinc-500/10"
               >
                 {lang === "id" ? "Tutup" : "Close"}
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {selectedProject && isLightboxOpen && (
+        <div
+          data-testid="screenshot-lightbox"
+          role="dialog"
+          aria-modal="true"
+          aria-label={
+            selectedProject.screenshotCaptions[lang][activeSlideIndex] ??
+            selectedProject.title
+          }
+          className="fixed inset-0 z-[60] flex flex-col items-center justify-center bg-black/90 p-4 backdrop-blur-md sm:p-8"
+        >
+          <button
+            type="button"
+            data-testid="btn-close-lightbox"
+            aria-label={lang === "id" ? "Tutup lightbox" : "Close lightbox"}
+            onClick={() => setIsLightboxOpen(false)}
+            className="absolute right-4 top-4 rounded-full border border-zinc-500/40 bg-zinc-900/80 p-2.5 text-zinc-100 transition-colors hover:bg-zinc-800 sm:right-6 sm:top-6"
+          >
+            <X aria-hidden="true" className="h-5 w-5" />
+          </button>
+
+          <div className="relative flex w-full max-w-6xl items-center justify-center">
+            <button
+              type="button"
+              aria-label={lang === "id" ? "Layar sebelumnya" : "Previous screen"}
+              onClick={handlePrevSlide}
+              className="absolute left-2 z-10 rounded-full border border-zinc-500/40 bg-zinc-900/80 p-3 text-zinc-100 transition-colors hover:bg-zinc-800 sm:left-4"
+            >
+              <ChevronLeft aria-hidden="true" className="h-6 w-6" />
+            </button>
+
+            <img
+              src={selectedProject.screenshots[activeSlideIndex]}
+              alt={
+                selectedProject.screenshotCaptions[lang][activeSlideIndex] ??
+                selectedProject.title
+              }
+              className="max-h-[82vh] w-auto max-w-full rounded-2xl object-contain"
+            />
+
+            <button
+              type="button"
+              aria-label={lang === "id" ? "Layar berikutnya" : "Next screen"}
+              onClick={handleNextSlide}
+              className="absolute right-2 z-10 rounded-full border border-zinc-500/40 bg-zinc-900/80 p-3 text-zinc-100 transition-colors hover:bg-zinc-800 sm:right-4"
+            >
+              <ChevronRight aria-hidden="true" className="h-6 w-6" />
+            </button>
+          </div>
+
+          <p className="mt-4 max-w-3xl text-center text-sm font-medium text-zinc-200">
+            {selectedProject.screenshotCaptions[lang][activeSlideIndex]}
+          </p>
         </div>
       )}
     </section>
