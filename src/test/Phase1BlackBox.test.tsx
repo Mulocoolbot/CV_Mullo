@@ -82,25 +82,24 @@ describe("Phase 1 Black Box Testing Suite", () => {
   it("tc_p1_04_toggling_3d_mode_switches_cleanly_to_2d_static_fallback", () => {
     render(<HomePage />);
 
-    expect(screen.getByTestId("card-3d-canvas")).toBeInTheDocument();
+    const faceTrigger = screen.getByTestId("neural-face-trigger");
+    expect(faceTrigger).toBeInTheDocument();
+    expect(faceTrigger).toHaveAttribute("data-surprised", "false");
 
-    fireEvent.click(screen.getByTestId("btn-3d-toggle"));
+    fireEvent.click(faceTrigger);
 
-    expect(screen.getByTestId("card-2d-fallback")).toBeInTheDocument();
-    expect(screen.queryByTestId("card-3d-canvas")).not.toBeInTheDocument();
+    expect(faceTrigger).toHaveAttribute("data-surprised", "true");
   });
 
   it("tc_p1_05_theme_and_accent_toggles_update_ui_state_and_localstorage", () => {
     render(<HomePage />);
 
     fireEvent.click(screen.getByTestId("btn-theme-toggle"));
-    fireEvent.click(screen.getByTestId("btn-accent-violet"));
 
-    expect(screen.getByTestId("theme-container")).toHaveClass("bg-zinc-50");
+    expect(screen.getByTestId("theme-container")).toHaveClass("bg-[#0D0F12]");
 
-    const stored = localStorage.getItem("cv_mullo_prefs_v1") ?? "";
-    expect(stored).toContain('"theme":"light"');
-    expect(stored).toContain('"accent":"violet"');
+    const stored = localStorage.getItem("cv_mullo_prefs_v2") ?? "";
+    expect(stored).toContain('"theme":"dark"');
   });
 });
 

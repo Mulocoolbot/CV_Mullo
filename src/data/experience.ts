@@ -49,7 +49,7 @@ export const skillsData: SkillItem[] = [
     levelBadge: { id: "Core Production", en: "Core Production" },
     description: {
       id: "UI deklaratif modern Android serta animasi Canvas 60FPS.",
-      en: "Modern declarative UI & 60FPS Canvas.",
+      en: "Modern declarative UI and 60FPS Canvas.",
     },
   },
   {
@@ -60,7 +60,7 @@ export const skillsData: SkillItem[] = [
     levelBadge: { id: "Core Production", en: "Core Production" },
     description: {
       id: "Rekayasa web dan full-stack dengan keamanan tipe statis.",
-      en: "Type-safe web & full-stack engineering.",
+      en: "Type-safe web and full-stack engineering.",
     },
   },
   {
@@ -71,7 +71,7 @@ export const skillsData: SkillItem[] = [
     levelBadge: { id: "Core Production", en: "Core Production" },
     description: {
       id: "Web interaktif serta arsitektur manipulasi DOM modern.",
-      en: "Interactive web & DOM architecture.",
+      en: "Interactive web and DOM architecture.",
     },
   },
   {
@@ -87,13 +87,13 @@ export const skillsData: SkillItem[] = [
   },
   {
     id: "html-css-tailwind",
-    name: "HTML5 & CSS3 / Tailwind",
+    name: "HTML5 & Tailwind CSS",
     category: "frontend-mobile",
     categoryLabel: { id: "Mobile & Frontend", en: "Mobile & Frontend" },
     levelBadge: { id: "Core Production", en: "Core Production" },
     description: {
-      id: "Tata letak Bento responsif dan styling antarmuka modern.",
-      en: "Responsive Bento & modern styling.",
+      id: "Tata letak responsif dan styling antarmuka modern.",
+      en: "Responsive layout and modern UI styling.",
     },
   },
   {
@@ -104,7 +104,7 @@ export const skillsData: SkillItem[] = [
     levelBadge: { id: "Core Production", en: "Core Production" },
     description: {
       id: "Visualisasi web 3D interaktif dan UI audio spasial.",
-      en: "Interactive 3D web & spatial audio UI.",
+      en: "Interactive 3D web and spatial audio UI.",
     },
   },
   {
@@ -126,7 +126,7 @@ export const skillsData: SkillItem[] = [
     levelBadge: { id: "Core Production", en: "Core Production" },
     description: {
       id: "Layanan backend skalabel dan integrasi antar-layanan API.",
-      en: "Scalable backend services & API integration.",
+      en: "Scalable backend services and API integration.",
     },
   },
   {
@@ -136,8 +136,8 @@ export const skillsData: SkillItem[] = [
     categoryLabel: { id: "Backend & Sistem", en: "Backend & Systems" },
     levelBadge: { id: "Core Production", en: "Core Production" },
     description: {
-      id: "Pola arsitektur modular untuk sistem enterprise dan SuperApps pemerintahan.",
-      en: "Modular enterprise & government SuperApps pattern.",
+      id: "Pola arsitektur modular untuk sistem dan SuperApps pemerintahan.",
+      en: "Modular enterprise and government SuperApps architecture.",
     },
   },
   {
@@ -147,8 +147,8 @@ export const skillsData: SkillItem[] = [
     categoryLabel: { id: "Backend & Sistem", en: "Backend & Systems" },
     levelBadge: { id: "Core Production", en: "Core Production" },
     description: {
-      id: "Perancangan skema relasional dan persistensi data luring (offline).",
-      en: "Relational schema design & offline persistence.",
+      id: "Perancangan skema relasional dan persistensi data luring.",
+      en: "Relational schema design and offline persistence.",
     },
   },
   {
@@ -159,7 +159,7 @@ export const skillsData: SkillItem[] = [
     levelBadge: { id: "Active R&D", en: "Active R&D" },
     description: {
       id: "Alur pemrosesan AI, otomasi sistem, dan pengolahan data.",
-      en: "AI pipelines, automation & data processing.",
+      en: "AI pipelines, automation, and data processing.",
     },
   },
   {
@@ -169,8 +169,8 @@ export const skillsData: SkillItem[] = [
     categoryLabel: { id: "AI & Data (R&D)", en: "AI & Data (R&D)" },
     levelBadge: { id: "Active R&D", en: "Active R&D" },
     description: {
-      id: "Verifikasi silang sumber data dan pembangunan pipeline terstruktur.",
-      en: "Cross-source verification & structured data pipelines.",
+      id: "Verifikasi silang sumber data dan pipeline terstruktur.",
+      en: "Cross-source verification and structured data pipelines.",
     },
   },
   {
@@ -180,8 +180,8 @@ export const skillsData: SkillItem[] = [
     categoryLabel: { id: "AI & Data (R&D)", en: "AI & Data (R&D)" },
     levelBadge: { id: "Active R&D", en: "Active R&D" },
     description: {
-      id: "Inferensi AI suara lokal sepenuhnya tanpa ketergantungan API eksternal.",
-      en: "Local inference without external API dependency.",
+      id: "Inferensi AI suara lokal tanpa ketergantungan API eksternal.",
+      en: "Local voice inference without external API dependency.",
     },
   },
   {
@@ -195,7 +195,7 @@ export const skillsData: SkillItem[] = [
     levelBadge: { id: "Workflow", en: "Workflow" },
     description: {
       id: "Eksekusi sprint iteratif serta verifikasi perilaku perangkat lunak.",
-      en: "Iterative sprint execution & behavioral verification.",
+      en: "Iterative sprint execution and behavioral verification.",
     },
   },
   {
@@ -208,8 +208,8 @@ export const skillsData: SkillItem[] = [
     },
     levelBadge: { id: "Workflow", en: "Workflow" },
     description: {
-      id: "Kontrol versi, penandaan rilis produksi, dan perancangan UI/UX.",
-      en: "Version control, release tagging & UI/UX prototyping.",
+      id: "Kontrol versi, penandaan rilis, dan perancangan antarmuka.",
+      en: "Version control, release tagging, and UI prototyping.",
     },
   },
   {
@@ -222,8 +222,8 @@ export const skillsData: SkillItem[] = [
     },
     levelBadge: { id: "Executive Soft Skill", en: "Executive Soft Skill" },
     description: {
-      id: "Kepala divisi dan perumus konsep strategis acara serta program kerja.",
-      en: "Division head, strategic event & program conceptor.",
+      id: "Memimpin divisi dan merumuskan konsep program kerja strategis.",
+      en: "Leading divisions and shaping strategic program concepts.",
     },
   },
   {
@@ -237,7 +237,7 @@ export const skillsData: SkillItem[] = [
     levelBadge: { id: "Executive Soft Skill", en: "Executive Soft Skill" },
     description: {
       id: "Diplomasi kelembagaan dan pengelolaan relasi mitra eksternal.",
-      en: "Institutional diplomacy & external stakeholder relations.",
+      en: "Institutional diplomacy and external stakeholder relations.",
     },
   },
 ];
@@ -269,8 +269,8 @@ export const timelineData: TimelineItem[] = [
     id: "diskominfosta-bangka-tengah",
     category: "work",
     categoryLabel: {
-      id: "Pengalaman Kerja / Magang",
-      en: "Work / Internship Experience",
+      id: "Pengalaman Magang",
+      en: "Internship Experience",
     },
     roleOrDegree: {
       id: "Backend Developer Intern",
@@ -280,23 +280,23 @@ export const timelineData: TimelineItem[] = [
       "Dinas Komunikasi, Informasi, dan Statistika (DISKOMINFOSTA) Bangka Tengah",
     location: "Bangka Tengah, Indonesia",
     period: {
-      id: "Magang — 2 Bulan",
-      en: "Internship — 2 Months",
+      id: "Magang 2 Bulan",
+      en: "2 Months Internship",
     },
     summary: {
-      id: "Berkontribusi dalam perancangan dan pengembangan infrastruktur Backend SuperApps layanan terpadu pemerintah daerah dengan pendekatan rekayasa perangkat lunak terstruktur.",
-      en: "Contributed to the design and engineering of an integrated regional government SuperApps backend infrastructure using structured software engineering practices.",
+      id: "Merancang dan mengembangkan layanan Backend SuperApps terpadu pemerintah daerah dengan standar rekayasa perangkat lunak terstruktur.",
+      en: "Designed and engineered integrated regional government SuperApps backend services using structured software practices.",
     },
     highlights: {
       id: [
-        "Merancang dan mengembangkan sistem Backend SuperApps layanan terpadu berbasis arsitektur Model-View-Controller (MVC).",
-        "Menerapkan siklus pengembangan perangkat lunak menggunakan metodologi Agile untuk memastikan pengiriman fitur tepat waktu.",
-        "Memahami secara mendalam alur birokrasi instansi, tata kelola sistem informasi pemerintahan, serta koordinasi lintas bidang di dunia kerja profesional.",
+        "Mengembangkan Backend SuperApps layanan terpadu berbasis arsitektur MVC.",
+        "Menjalankan siklus pengiriman fitur teratur menggunakan metodologi Agile.",
+        "Mempelajari alur birokrasi instansi, tata kelola sistem pemerintahan, dan koordinasi lintas bidang.",
       ],
       en: [
-        "Designed and developed the integrated SuperApps backend system built upon the Model-View-Controller (MVC) architecture.",
-        "Executed iterative software delivery using Agile methodology to ensure reliable feature milestones.",
-        "Gained firsthand mastery of institutional bureaucracy workflows, government information system governance, and professional workplace coordination.",
+        "Built the integrated SuperApps backend built on MVC architecture.",
+        "Delivered iterative feature milestones under Agile methodology.",
+        "Navigated institutional bureaucracy workflows, government IT governance, and cross-team coordination.",
       ],
     },
     tags: [
@@ -326,17 +326,17 @@ export const timelineData: TimelineItem[] = [
       en: "Leadership Tenure",
     },
     summary: {
-      id: "Mengepalai divisi strategis yang menjembatani hubungan kelembagaan antara pihak eksternal kampus dengan HMIF ITERA serta merumuskan konsep seluruh program kerja divisi.",
-      en: "Led the strategic division bridging institutional relations between external stakeholders and HMIF ITERA while conceptualizing all division-wide initiatives.",
+      id: "Memimpin divisi strategis penghubung antara mitra eksternal kampus dengan HMIF ITERA sekaligus merumuskan konsep program kerja.",
+      en: "Led the strategic division bridging external stakeholders with HMIF ITERA while shaping division-wide programs.",
     },
     highlights: {
       id: [
-        "Mengepalai dan mengoordinasikan seluruh anggota Divisi Ekstra Kampus sebagai penghubung utama antara pihak eksternal kampus ITERA dengan HMIF ITERA.",
-        "Menjadi konseptor utama (Lead Conceptor) dalam merancang arah strategis, kerangka acara, dan seluruh kegiatan yang dibawahi oleh Divisi Ekstra Kampus.",
+        "Mengoordinasikan tim Divisi Ekstra Kampus sebagai penghubung resmi antara pihak eksternal ITERA dan himpunan.",
+        "Menjadi Lead Conceptor dalam merancang arah strategis serta kerangka seluruh kegiatan divisi.",
       ],
       en: [
-        "Led and coordinated the External Campus Division as the primary diplomatic bridge between external organizations and HMIF ITERA.",
-        "Served as the Lead Conceptor designing strategic frameworks and program blueprints for all activities under the External Campus Division.",
+        "Coordinated the External Campus Division as the diplomatic link between external partners and HMIF ITERA.",
+        "Served as Lead Conceptor crafting strategic frameworks for all division activities.",
       ],
     },
     tags: [
@@ -366,17 +366,17 @@ export const timelineData: TimelineItem[] = [
       en: "Regional Executive Tenure",
     },
     summary: {
-      id: "Mengepalai bidang tingkat wilayah yang berfokus pada pemetaan, penampungan, serta penyaluran minat dan bakat mahasiswa informatika dan komputer lintas kampus.",
-      en: "Headed the regional department dedicated to mapping, incubating, and channeling the interests and talents of informatics and computer science students across universities.",
+      id: "Memimpin bidang tingkat wilayah untuk memetakan, menampung, dan menyalurkan minat serta bakat mahasiswa informatika lintas kampus.",
+      en: "Directed the regional department dedicated to mapping and channeling informatics student talents across universities.",
     },
     highlights: {
       id: [
-        "Mengepalai bidang yang bertugas menjadi wadah penampungan serta penyaluran minat dan bakat seluruh anggota PERMIKOMNAS Wilayah XV.",
-        "Menjadi konseptor utama dalam merancang dan mengarahkan seluruh kegiatan pengembangan potensi yang dibawahi oleh Bidang Minat dan Bakat.",
+        "Mengelola wadah penyaluran minat dan bakat bagi mahasiswa anggota PERMIKOMNAS Wilayah XV.",
+        "Merancang konsep serta mengarahkan eksekusi kegiatan pengembangan potensi di tingkat wilayah.",
       ],
       en: [
-        "Directed the regional department serving as the primary hub for capturing and channeling member interests and talents across PERMIKOMNAS Region XV.",
-        "Acted as the primary conceptualizer designing all talent-development programs and collaborative activities under the department.",
+        "Managed talent-development hubs for informatics students across PERMIKOMNAS Region XV.",
+        "Conceptualized and guided collaborative student programs at the regional level.",
       ],
     },
     tags: [
@@ -405,17 +405,17 @@ export const timelineData: TimelineItem[] = [
       en: "Active Staff Tenure",
     },
     summary: {
-      id: "Berperan aktif sebagai narahubung eksternal dan eksekutor lapangan untuk program kolaborasi antarkampus dan kunjungan industri.",
-      en: "Served actively as an external liaison officer and field concept executor for inter-university collaborations and industrial visits.",
+      id: "Berperan sebagai narahubung eksternal dan pelaksana teknis untuk program kunjungan industri serta studi banding antarkampus.",
+      en: "Served as external liaison and field coordinator for industrial visits and inter-university comparative studies.",
     },
     highlights: {
       id: [
-        "Menjadi narahubung (Liaison Officer) antara pihak eksternal kampus ITERA dengan HMIF ITERA.",
-        "Menjadi pengeksekusi konsep lapangan untuk kegiatan Kunjungan Lapangan / Kunjungan Industri serta kegiatan Studi Banding bersama kampus lain.",
+        "Menjadi Liaison Officer antara mitra eksternal kampus dengan HMIF ITERA.",
+        "Mengeksekusi kegiatan Kunjungan Industri dan Studi Banding bersama himpunan kampus lain.",
       ],
       en: [
-        "Acted as the official Liaison Officer connecting external institutional partners with HMIF ITERA.",
-        "Executed operational concepts for Field/Industrial Visits and inter-university Comparative Study programs.",
+        "Acted as Liaison Officer connecting external partners with HMIF ITERA.",
+        "Executed Industrial Visits and Comparative Study programs alongside partner student organizations.",
       ],
     },
     tags: [
@@ -437,34 +437,33 @@ export const timelineData: TimelineItem[] = [
       en: "B.Sc. in Informatics Engineering (Software Engineering & Information Systems)",
     },
     organization: "Institut Teknologi Sumatera (ITERA)",
-    location: "Lampung Selatan / Bandar Lampung, Indonesia",
+    location: "Lampung Selatan, Indonesia",
     period: {
-      id: "2023 – Sekarang (Aktif Studi)",
-      en: "2023 – Present (Active Undergraduate)",
+      id: "2023 - Sekarang",
+      en: "2023 - Present",
     },
     summary: {
-      id: "Menempuh pendidikan sarjana Teknik Informatika dengan fokus pendalaman pada Rekayasa Perangkat Lunak (RPL) dan arsitektur Sistem Informasi, dipadukan dengan pengembangan aktif organisasi kemahasiswaan.",
-      en: "Pursuing an undergraduate degree in Informatics Engineering specializing in Software Engineering (RPL) and Information Systems architecture, paired with active student leadership.",
+      id: "Menempuh studi Teknik Informatika dengan pendalaman Rekayasa Perangkat Lunak (RPL) dan arsitektur Sistem Informasi.",
+      en: "Pursuing an Informatics Engineering degree focused on Software Engineering (RPL) and Information Systems architecture.",
     },
     highlights: {
       id: [
-        "Fokus studi utama pada pengembangan Rekayasa Perangkat Lunak (RPL) untuk aplikasi Web & Mobile serta perancangan Sistem Informasi.",
-        "Mengintegrasikan pembelajaran akademik dengan riset mandiri di bidang Data Engineering dan pengembangan AI lokal (Python).",
+        "Mendalami pengembangan perangkat lunak Web & Mobile serta perancangan Sistem Informasi.",
+        "Menggabungkan studi akademik dengan riset mandiri Data Engineering dan AI lokal berbasis Python.",
         "Aktif memimpin divisi strategis di HMIF ITERA dan PERMIKOMNAS Wilayah XV selama masa studi.",
       ],
       en: [
-        "Core academic specialization in Software Engineering (Web & Mobile) and Information Systems design.",
-        "Bridging academic foundations with independent R&D in Data Engineering and on-device AI development using Python.",
-        "Actively leading strategic divisions in HMIF ITERA and PERMIKOMNAS Region XV alongside academic coursework.",
+        "Specializing in Web & Mobile Software Engineering and Information Systems design.",
+        "Complementing coursework with independent Data Engineering and Python on-device AI R&D.",
+        "Actively leading divisions in HMIF ITERA and PERMIKOMNAS Region XV alongside academic studies.",
       ],
     },
     tags: [
       "Teknik Informatika",
       "ITERA",
-      "Rekayasa Perangkat Lunak (RPL)",
+      "Rekayasa Perangkat Lunak",
       "Sistem Informasi",
       "2023 - Present",
     ],
   },
 ];
-

@@ -12,6 +12,49 @@ import {
 } from "react";
 import type { AccentColor, Language, ThemeMode } from "@/types/cv";
 
+export interface ThemeTokens {
+  bgPrimary: string;
+  bgSurface: string;
+  textPrimary: string;
+  textMuted: string;
+  border: string;
+  secondaryHex: string;
+  secondaryBg: string;
+  secondaryText: string;
+  tertiaryHex: string;
+  tertiaryBg: string;
+  tertiaryText: string;
+}
+
+export const themeTokens: Record<ThemeMode, ThemeTokens> = {
+  light: {
+    bgPrimary: "bg-[#F7F6F2]",
+    bgSurface: "bg-white/90",
+    textPrimary: "text-[#121316]",
+    textMuted: "text-[#5A5D64]",
+    border: "border-[#E2E0D8]",
+    secondaryHex: "#2563EB",
+    secondaryBg: "bg-[#2563EB] text-white",
+    secondaryText: "text-[#2563EB]",
+    tertiaryHex: "#FF5A36",
+    tertiaryBg: "bg-[#FF5A36] text-white",
+    tertiaryText: "text-[#FF5A36]",
+  },
+  dark: {
+    bgPrimary: "bg-[#0D0F12]",
+    bgSurface: "bg-[#15181E]/90",
+    textPrimary: "text-[#F4F3EF]",
+    textMuted: "text-[#9CA3AF]",
+    border: "border-[#262932]",
+    secondaryHex: "#3B82F6",
+    secondaryBg: "bg-[#2563EB] text-white",
+    secondaryText: "text-[#3B82F6]",
+    tertiaryHex: "#FF5A36",
+    tertiaryBg: "bg-[#FF5A36] text-white",
+    tertiaryText: "text-[#FF5A36]",
+  },
+};
+
 export interface AccentTokens {
   bg: string;
   text: string;
@@ -20,62 +63,45 @@ export interface AccentTokens {
   hex: string;
 }
 
+const cobaltAccent: AccentTokens = {
+  bg: "bg-[#2563EB]",
+  text: "text-[#2563EB]",
+  border: "border-[#2563EB]/30",
+  ring: "ring-[#2563EB]/40",
+  hex: "#2563EB",
+};
+
 export const accentPalette: Record<AccentColor, AccentTokens> = {
-  emerald: {
-    bg: "bg-emerald-500",
-    text: "text-emerald-400",
-    border: "border-emerald-500/30",
-    ring: "ring-emerald-500/50",
-    hex: "#10b981",
-  },
-  blue: {
-    bg: "bg-blue-500",
-    text: "text-blue-400",
-    border: "border-blue-500/30",
-    ring: "ring-blue-500/50",
-    hex: "#3b82f6",
-  },
-  violet: {
-    bg: "bg-violet-500",
-    text: "text-violet-400",
-    border: "border-violet-500/30",
-    ring: "ring-violet-500/50",
-    hex: "#8b5cf6",
-  },
-  amber: {
-    bg: "bg-amber-500",
-    text: "text-amber-400",
-    border: "border-amber-500/30",
-    ring: "ring-amber-500/50",
-    hex: "#f59e0b",
-  },
+  emerald: cobaltAccent,
+  blue: cobaltAccent,
+  violet: cobaltAccent,
+  amber: cobaltAccent,
 };
 
 export interface PreferencesState {
   lang: Language;
   theme: ThemeMode;
-  accent: AccentColor;
-  enable3D: boolean;
 }
 
 export interface PreferencesContextValue extends PreferencesState {
+  tokens: ThemeTokens;
+  accent: AccentColor;
+  enable3D: boolean;
   palette: AccentTokens;
   setLang: (lang: Language) => void;
   toggleLanguage: () => void;
   setTheme: (theme: ThemeMode) => void;
   toggleTheme: () => void;
-  setAccent: (accent: AccentColor) => void;
-  setEnable3D: (enable3D: boolean) => void;
+  setAccent: (_accent: AccentColor) => void;
+  setEnable3D: (_enable3D: boolean) => void;
   toggle3D: () => void;
 }
 
-const STORAGE_KEY = "cv_mullo_prefs_v1";
+const STORAGE_KEY = "cv_mullo_prefs_v2";
 
 const DEFAULT_PREFERENCES: PreferencesState = {
   lang: "id",
-  theme: "dark",
-  accent: "emerald",
-  enable3D: true,
+  theme: "light",
 };
 
 const PreferencesContext = createContext<PreferencesContextValue | null>(null);
@@ -88,16 +114,12 @@ function isValidTheme(value: unknown): value is ThemeMode {
   return value === "dark" || value === "light";
 }
 
-function isValidAccent(value: unknown): value is AccentColor {
-  return (
-    typeof value === "string" &&
-    Object.prototype.hasOwnProperty.call(accentPalette, value)
-  );
-}
-
 function persistPreferences(state: PreferencesState) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ lang: state.lang, theme: state.theme })
+    );
   } catch {}
 }
 
@@ -119,13 +141,6 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
           theme: isValidTheme(parsed.theme)
             ? parsed.theme
             : DEFAULT_PREFERENCES.theme,
-          accent: isValidAccent(parsed.accent)
-            ? parsed.accent
-            : DEFAULT_PREFERENCES.accent,
-          enable3D:
-            typeof parsed.enable3D === "boolean"
-              ? parsed.enable3D
-              : DEFAULT_PREFERENCES.enable3D,
         };
         setPrefs(hydrated);
         isHydratedRef.current = true;
@@ -142,7 +157,6 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
     persistPreferences(prefs);
     const root = document.documentElement;
     root.dataset.theme = prefs.theme;
-    root.dataset.accent = prefs.accent;
     root.lang = prefs.lang;
     root.classList.toggle("dark", prefs.theme === "dark");
   }, [existingContext, prefs]);
@@ -185,52 +199,24 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const setAccent = useCallback((accent: AccentColor) => {
-    setPrefs((prev) => {
-      const next = { ...prev, accent };
-      persistPreferences(next);
-      return next;
-    });
-  }, []);
-
-  const setEnable3D = useCallback((enable3D: boolean) => {
-    setPrefs((prev) => {
-      const next = { ...prev, enable3D };
-      persistPreferences(next);
-      return next;
-    });
-  }, []);
-
-  const toggle3D = useCallback(() => {
-    setPrefs((prev) => {
-      const next = { ...prev, enable3D: !prev.enable3D };
-      persistPreferences(next);
-      return next;
-    });
-  }, []);
+  const noop = useCallback(() => {}, []);
 
   const value = useMemo<PreferencesContextValue>(
     () => ({
       ...prefs,
-      palette: accentPalette[prefs.accent],
+      tokens: themeTokens[prefs.theme],
+      accent: "blue",
+      enable3D: true,
+      palette: cobaltAccent,
       setLang,
       toggleLanguage,
       setTheme,
       toggleTheme,
-      setAccent,
-      setEnable3D,
-      toggle3D,
+      setAccent: noop,
+      setEnable3D: noop,
+      toggle3D: noop,
     }),
-    [
-      prefs,
-      setLang,
-      toggleLanguage,
-      setTheme,
-      toggleTheme,
-      setAccent,
-      setEnable3D,
-      toggle3D,
-    ]
+    [prefs, setLang, toggleLanguage, setTheme, toggleTheme, noop]
   );
 
   if (existingContext) {
@@ -242,11 +228,10 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
       <div
         data-testid="theme-container"
         data-theme={prefs.theme}
-        data-accent={prefs.accent}
-        className={`min-h-screen transition-colors duration-300 ${
-          prefs.theme === "dark"
-            ? "bg-zinc-950 text-zinc-100"
-            : "bg-zinc-50 text-zinc-900"
+        className={`min-h-screen relative transition-colors duration-300 ${
+          prefs.theme === "light"
+            ? "bg-[#F7F6F2] text-[#121316]"
+            : "bg-[#0D0F12] text-[#F4F3EF]"
         }`}
       >
         {children}
@@ -262,4 +247,3 @@ export function usePreferences(): PreferencesContextValue {
   }
   return context;
 }
-

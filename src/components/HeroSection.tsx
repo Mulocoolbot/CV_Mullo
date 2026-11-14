@@ -2,24 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import {
-  ArrowDownRight,
-  Compass,
-  Cpu,
-  FileText,
-  MapPin,
-  Sparkles,
-  UserCheck,
-  Users,
-} from "lucide-react";
+import { ArrowDownRight, FileText, MapPin } from "lucide-react";
 import { AtsResumeModal } from "@/components/AtsResumeModal";
-import { InteractiveCard3D } from "@/components/InteractiveCard3D";
+import { InteractiveFace3D } from "@/components/InteractiveFace3D";
 import { profileData } from "@/data/profile";
-import { accentPalette, usePreferences } from "@/hooks/usePreferences";
+import { themeTokens, usePreferences } from "@/hooks/usePreferences";
 
 export function HeroSection() {
-  const { lang, theme, accent } = usePreferences();
-  const currentAccent = accentPalette[accent];
+  const { lang, theme } = usePreferences();
+  const tokens = themeTokens[theme];
   const shouldReduceMotion = useReducedMotion();
   const [roleIndex, setRoleIndex] = useState(0);
   const [imageError, setImageError] = useState(false);
@@ -48,229 +39,152 @@ export function HeroSection() {
     window.open(profileData.cvPdfUrl, "_blank", "noopener,noreferrer");
   };
 
-  const surfaceClass =
-    theme === "dark"
-      ? "border-zinc-800/80 bg-zinc-900/60"
-      : "border-zinc-200/90 bg-white/80";
-
   return (
-    <section className="max-w-6xl mx-auto px-6 pt-12 pb-28 grid gap-6 lg:grid-cols-12">
-      <div
-        className={`lg:col-span-7 flex flex-col justify-between rounded-3xl border p-8 shadow-lg backdrop-blur-md ${surfaceClass}`}
-      >
-        <div className="space-y-5">
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
+    <section
+      id="hero-section"
+      data-testid="hero-section"
+      className="pt-24 sm:pt-28 pb-10 max-w-7xl mx-auto px-4 sm:px-8"
+    >
+      <div className="grid gap-5 lg:grid-cols-12 items-stretch">
+        <div
+          className={`lg:col-span-7 p-6 sm:p-7 rounded-2xl border flex flex-col justify-between gap-5 shadow-sm backdrop-blur-md ${tokens.bgSurface} ${tokens.border}`}
+        >
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-start gap-4">
               {!imageError ? (
                 <img
                   src={profileData.avatarUrl}
                   alt={profileData.name}
                   data-testid="profile-avatar-img"
                   onError={() => setImageError(true)}
-                  className={`w-20 h-20 sm:w-24 sm:h-24 rounded-2xl object-cover border-2 ${currentAccent.border}`}
+                  className={`w-16 h-16 rounded-xl border object-cover shrink-0 ${tokens.border}`}
                 />
               ) : (
                 <div
                   data-testid="profile-avatar-fallback"
-                  className={`flex w-20 h-20 sm:w-24 sm:h-24 items-center justify-center rounded-2xl border-2 ${currentAccent.border} font-mono text-xl font-bold ${currentAccent.text}`}
+                  className={`flex w-16 h-16 items-center justify-center rounded-xl border font-mono text-lg font-bold shrink-0 ${tokens.border} ${tokens.secondaryText}`}
                 >
                   AMS
                 </div>
               )}
 
-              <div className="space-y-2">
-                {profileData.available && (
-                  <div
-                    data-testid="status-badge"
-                    className={`inline-flex items-center gap-2.5 rounded-full border ${currentAccent.border} px-4 py-1.5 font-mono text-xs font-medium ${currentAccent.text}`}
-                  >
-                    <span
-                      className={`h-2 w-2 animate-pulse rounded-full ${currentAccent.bg}`}
-                    />
-                    <span>{profileData.statusLabel[lang]}</span>
-                  </div>
-                )}
+              <div className="space-y-1.5 min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  {profileData.available && (
+                    <div
+                      data-testid="status-badge"
+                      className={`inline-flex items-center gap-2 rounded-full border px-3 py-0.5 text-xs font-medium ${tokens.border}`}
+                    >
+                      <span className="h-2 w-2 animate-pulse rounded-full bg-[#FF5A36]" />
+                      <span>{profileData.statusLabel[lang]}</span>
+                    </div>
+                  )}
 
-                <div>
-                  <span className="font-mono text-xs opacity-70">
-                    @{profileData.handle}
+                  <span className={`inline-flex items-center gap-1 text-xs ${tokens.textMuted}`}>
+                    <MapPin
+                      aria-hidden="true"
+                      className={`h-3.5 w-3.5 ${tokens.secondaryText}`}
+                    />
+                    <span>{profileData.location}</span>
                   </span>
                 </div>
+
+                <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+                  {profileData.name}
+                </h1>
+
+                <motion.p
+                  key={profileData.roles[roleIndex]}
+                  data-testid="active-role"
+                  initial={shouldReduceMotion ? false : { opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className={`font-mono text-xs font-semibold sm:text-sm ${tokens.secondaryText}`}
+                >
+                  {profileData.roles[roleIndex]}
+                </motion.p>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <p className="text-base font-medium leading-snug sm:text-lg">
+                {profileData.headline[lang]}
+              </p>
+
+              <div className={`text-sm leading-relaxed space-y-2 ${tokens.textMuted}`}>
+                {profileData.bio[lang].map((paragraph, idx) => (
+                  <p key={idx}>{paragraph}</p>
+                ))}
               </div>
             </div>
           </div>
 
-          <div className="space-y-2">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-              {profileData.name}
-            </h1>
+          <div className={`space-y-4 pt-3 border-t ${tokens.border}`}>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <ul role="list" className="flex flex-wrap gap-1.5">
+                {profileData.coreStack.map((tech) => (
+                  <li
+                    key={tech}
+                    className={`text-xs px-2.5 py-1 rounded-md border font-mono font-medium ${tokens.border}`}
+                  >
+                    {tech}
+                  </li>
+                ))}
+              </ul>
 
-            <div className="flex items-center gap-2 pt-1">
-              <Sparkles
-                aria-hidden="true"
-                className={`h-4 w-4 ${currentAccent.text}`}
-              />
-              <motion.span
-                key={profileData.roles[roleIndex]}
-                data-testid="active-role"
-                initial={shouldReduceMotion ? false : { opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.25 }}
-                className={`font-mono text-sm font-semibold sm:text-base ${currentAccent.text}`}
-              >
-                {profileData.roles[roleIndex]}
-              </motion.span>
+              <ul role="list" className="flex flex-wrap gap-1.5">
+                {profileData.exploringStack.map((item) => (
+                  <li
+                    key={item}
+                    className="text-xs px-2.5 py-1 rounded-md border border-[#FF5A36]/40 font-mono font-medium text-[#FF5A36]"
+                  >
+                    {item}
+                  </li>
+                ))}
+                {profileData.softSkills.map((skill) => (
+                  <li
+                    key={skill}
+                    className={`text-xs px-2.5 py-1 rounded-md border font-medium ${tokens.border} ${tokens.textMuted}`}
+                  >
+                    {skill}
+                  </li>
+                ))}
+              </ul>
             </div>
-          </div>
 
-          <p className="text-lg font-medium leading-relaxed opacity-90 sm:text-xl">
-            {profileData.headline[lang]}
-          </p>
-        </div>
-
-        <div className="mt-8 space-y-4 pt-4 border-t border-zinc-500/15">
-          <div className="flex flex-wrap items-center gap-3 text-sm">
-            <span className="inline-flex items-center gap-1.5 font-medium">
-              <MapPin
-                aria-hidden="true"
-                className={`h-4 w-4 ${currentAccent.text}`}
-              />
-              <span>{profileData.location}</span>
-            </span>
-
-            <div className="flex flex-wrap gap-2">
-              {profileData.workTypes.map((workType) => (
-                <span
-                  key={workType}
-                  className={`rounded-full border ${currentAccent.border} px-3 py-0.5 font-mono text-xs ${currentAccent.text}`}
-                >
-                  {workType}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3 pt-1">
-            <button
-              type="button"
-              data-testid="btn-explore-projects"
-              onClick={handleExploreProjects}
-              className={`inline-flex items-center gap-2 rounded-2xl ${currentAccent.bg} px-5 py-2.5 text-sm font-semibold text-zinc-950 transition-opacity hover:opacity-90`}
-            >
-              <span>
-                {lang === "id" ? "Jelajahi 6 Proyek" : "Explore 6 Projects"}
-              </span>
-              <ArrowDownRight aria-hidden="true" className="h-4 w-4" />
-            </button>
-
-            <button
-              type="button"
-              data-testid="btn-download-cv"
-              onClick={handleDownloadCv}
-              className={`inline-flex items-center gap-2 rounded-2xl border ${currentAccent.border} px-5 py-2.5 text-sm font-semibold ${currentAccent.text} transition-colors hover:bg-zinc-500/10`}
-            >
-              <FileText aria-hidden="true" className="h-4 w-4" />
-              <span>{lang === "id" ? "Unduh CV (PDF)" : "Download CV (PDF)"}</span>
-            </button>
-          </div>
-
-          <AtsResumeModal
-            isOpen={showCvNotice}
-            onClose={() => setShowCvNotice(false)}
-          />
-        </div>
-      </div>
-
-      <div className="lg:col-span-5">
-        <InteractiveCard3D />
-      </div>
-
-      <div
-        className={`lg:col-span-5 flex flex-col justify-between rounded-3xl border p-8 shadow-lg backdrop-blur-md ${surfaceClass}`}
-      >
-        <div className="space-y-4">
-          <div
-            className={`flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wider ${currentAccent.text}`}
-          >
-            <UserCheck aria-hidden="true" className="h-4 w-4" />
-            <h2>{lang === "id" ? "Ringkasan Profil" : "Profile Summary"}</h2>
-          </div>
-
-          <div className="space-y-3.5 text-sm leading-relaxed opacity-85 sm:text-base">
-            {profileData.bio[lang].map((paragraph, index) => (
-              <p key={index}>{paragraph}</p>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="lg:col-span-7 grid gap-6">
-        <div
-          className={`rounded-3xl border p-7 shadow-lg backdrop-blur-md ${surfaceClass}`}
-        >
-          <div
-            className={`flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wider ${currentAccent.text}`}
-          >
-            <Cpu aria-hidden="true" className="h-4 w-4" />
-            <h2>Core Tech Stack</h2>
-          </div>
-
-          <ul role="list" className="mt-4 flex flex-wrap gap-2.5">
-            {profileData.coreStack.map((tech) => (
-              <li
-                key={tech}
-                className="rounded-xl border border-zinc-500/20 px-3.5 py-2 font-mono text-xs font-semibold"
+            <div className="flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                data-testid="btn-explore-projects"
+                onClick={handleExploreProjects}
+                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold sm:text-sm transition-opacity hover:opacity-90 ${tokens.secondaryBg}`}
               >
-                {tech}
-              </li>
-            ))}
-          </ul>
+                <span>{lang === "id" ? "Lihat Proyek" : "View Projects"}</span>
+                <ArrowDownRight aria-hidden="true" className="h-4 w-4" />
+              </button>
+
+              <button
+                type="button"
+                data-testid="btn-download-cv"
+                onClick={handleDownloadCv}
+                className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold sm:text-sm transition-colors hover:border-[#2563EB] ${tokens.border} ${tokens.secondaryText}`}
+              >
+                <FileText aria-hidden="true" className="h-4 w-4" />
+                <span>{lang === "id" ? "Unduh CV" : "Download CV"}</span>
+              </button>
+            </div>
+
+            <AtsResumeModal
+              isOpen={showCvNotice}
+              onClose={() => setShowCvNotice(false)}
+            />
+          </div>
         </div>
 
         <div
-          className={`grid gap-6 rounded-3xl border p-7 shadow-lg backdrop-blur-md sm:grid-cols-2 ${surfaceClass}`}
+          className={`lg:col-span-5 rounded-2xl border overflow-hidden min-h-[340px] lg:min-h-full flex shadow-sm backdrop-blur-md [&>*]:h-full [&>*]:w-full [&>*]:border-0 [&>*]:rounded-none [&>*]:shadow-none ${tokens.bgSurface} ${tokens.border}`}
         >
-          <div>
-            <div
-              className={`flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wider ${currentAccent.text}`}
-            >
-              <Compass aria-hidden="true" className="h-4 w-4" />
-              <h2>
-                {lang === "id" ? "Sedang Ditekuni" : "Currently Exploring"}
-              </h2>
-            </div>
-
-            <ul role="list" className="mt-4 flex flex-wrap gap-2">
-              {profileData.exploringStack.map((item) => (
-                <li
-                  key={item}
-                  className={`rounded-xl border ${currentAccent.border} px-3 py-1.5 font-mono text-xs font-semibold ${currentAccent.text}`}
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <div
-              className={`flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-wider ${currentAccent.text}`}
-            >
-              <Users aria-hidden="true" className="h-4 w-4" />
-              <h2>Soft Skills &amp; Organisasi</h2>
-            </div>
-
-            <ul role="list" className="mt-4 flex flex-wrap gap-2">
-              {profileData.softSkills.map((skill) => (
-                <li
-                  key={skill}
-                  className="rounded-xl border border-zinc-500/20 px-3 py-1.5 text-xs font-medium"
-                >
-                  {skill}
-                </li>
-              ))}
-            </ul>
-          </div>
+          <InteractiveFace3D />
         </div>
       </div>
     </section>

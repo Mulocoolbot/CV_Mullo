@@ -14,19 +14,19 @@ export const profileData: ProfileData = {
   },
   roles: ["Web Developer", "Mobile Apps Developer", "Full Stack Developer"],
   headline: {
-    id: "Merancang Aplikasi Mobile, Ekosistem Website, dan Sistem Informasi yang Skalabel & Presisi.",
-    en: "Engineering Scalable Mobile Apps, Modern Web Ecosystems, and Reliable Information Systems.",
+    id: "Pengembang perangkat lunak berfokus pada aplikasi mobile, ekosistem web, dan sistem informasi.",
+    en: "Software developer focused on mobile applications, web ecosystems, and information systems.",
   },
   bio: {
     id: [
-      "Aku adalah pengembang perangkat lunak dengan ketertarikan tinggi pada pengembangan aplikasi mobile dan website, serta memiliki pemahaman mendalam terhadap rekayasa perangkat lunak dan sistem informasi.",
-      "Tidak hanya berfokus pada aspek teknis, aku juga aktif berorganisasi untuk mengasah kemampuan kepemimpinan (leadership) dan public speaking guna membangun kolaborasi tim serta komunikasi klien yang efektif.",
-      "Saat ini aku sedang memperluas keahlian ke bidang Data Engineering dan AI Development menggunakan ekosistem Python.",
+      "Saya mengembangkan aplikasi mobile dan web dengan fokus pada keandalan sistem, struktur kode yang bersih, dan pengalaman pengguna yang nyaman.",
+      "Pengalaman aktif di organisasi kemahasiswaan membentuk kemampuan kepemimpinan, public speaking, dan koordinasi tim saya.",
+      "Saat ini saya mendalami Data Engineering dan pengembangan AI menggunakan ekosistem Python.",
     ],
     en: [
-      "I am a software developer with a strong passion for mobile app and web development, backed by a solid foundation in software engineering and information systems.",
-      "Beyond technical execution, I actively engage in organizations to sharpen my leadership and public speaking skills, ensuring effective team collaboration and clear client communication.",
-      "I am currently expanding my expertise into Data Engineering and AI Development using the Python ecosystem.",
+      "I build mobile and web applications with a focus on system reliability, clean architecture, and intuitive user experiences.",
+      "Active roles in student organizations have sharpened my leadership, public speaking, and cross-team coordination skills.",
+      "I am currently expanding my expertise in Data Engineering and AI development using the Python ecosystem.",
     ],
   },
   coreStack: [
@@ -42,4 +42,3 @@ export const profileData: ProfileData = {
   exploringStack: ["Python", "Data Engineering", "AI Development"],
   softSkills: ["Leadership", "Public Speaking", "Team Collaboration"],
 };
-
