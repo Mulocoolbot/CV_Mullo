@@ -11,8 +11,8 @@ import {
   Sparkles,
   UserCheck,
   Users,
-  X,
 } from "lucide-react";
+import { AtsResumeModal } from "@/components/AtsResumeModal";
 import { InteractiveCard3D } from "@/components/InteractiveCard3D";
 import { profileData } from "@/data/profile";
 import { accentPalette, usePreferences } from "@/hooks/usePreferences";
@@ -174,27 +174,10 @@ export function HeroSection() {
             </button>
           </div>
 
-          {showCvNotice && (
-            <div
-              data-testid="cv-pending-banner"
-              role="status"
-              className={`flex items-start justify-between gap-3 rounded-2xl border ${currentAccent.border} p-4 text-xs leading-relaxed sm:text-sm`}
-            >
-              <p>
-                {lang === "id"
-                  ? "Dokumen CV PDF (ATS) sedang disiapkan. Silakan tinjau studi kasus lengkap dan repositori GitHub pada portofolio di bawah ini."
-                  : "The ATS PDF CV document is currently being finalized. Please explore the full technical case studies and GitHub repositories below."}
-              </p>
-              <button
-                type="button"
-                aria-label={lang === "id" ? "Tutup pemberitahuan" : "Dismiss notice"}
-                onClick={() => setShowCvNotice(false)}
-                className="shrink-0 rounded-lg p-1 opacity-70 transition-opacity hover:opacity-100"
-              >
-                <X aria-hidden="true" className="h-4 w-4" />
-              </button>
-            </div>
-          )}
+          <AtsResumeModal
+            isOpen={showCvNotice}
+            onClose={() => setShowCvNotice(false)}
+          />
         </div>
       </div>
 

@@ -89,3 +89,28 @@ export interface TimelineItem {
   };
   tags: string[];
 }
+
+export interface ServicePackage {
+  id: string;
+  title: LocalizedText;
+  badge: LocalizedText;
+  startingPrice: LocalizedText;
+  estimatedDuration: LocalizedText;
+  pricingNote: LocalizedText;
+  description: LocalizedText;
+  deliverables: {
+    id: string[];
+    en: string[];
+  };
+  techStack: string[];
+}
+
+export interface ContactConfig {
+  email: string;
+  whatsappRaw: string;
+  whatsappApiNumber: string;
+  instagramUrl: string;
+  instagramHandle: string;
+  githubUrl: string;
+  githubHandle: string;
+}
