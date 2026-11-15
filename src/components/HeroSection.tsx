@@ -16,6 +16,13 @@ export function HeroSection() {
   const [imageError, setImageError] = useState(false);
   const [showCvNotice, setShowCvNotice] = useState(false);
 
+  const gridBorder =
+    theme === "dark" ? "border-[#232329]" : "border-[#E5E3DC]";
+  const studioFrame =
+    theme === "dark"
+      ? "border-[#232329] bg-[#0A0A0C]/90 backdrop-blur-sm"
+      : "border-[#E5E3DC] bg-[#F7F6F2]/90 backdrop-blur-sm";
+
   useEffect(() => {
     const intervalId = window.setInterval(() => {
       setRoleIndex((prev) => (prev + 1) % profileData.roles.length);
@@ -45,11 +52,11 @@ export function HeroSection() {
       data-testid="hero-section"
       className="pt-24 sm:pt-28 pb-10 max-w-7xl mx-auto px-4 sm:px-8"
     >
-      <div className="grid gap-5 lg:grid-cols-12 items-stretch">
+      <div className={`grid lg:grid-cols-12 border ${studioFrame}`}>
         <div
-          className={`lg:col-span-7 p-6 sm:p-7 rounded-2xl border flex flex-col justify-between gap-5 shadow-sm backdrop-blur-md ${tokens.bgSurface} ${tokens.border}`}
+          className={`lg:col-span-7 p-6 sm:p-8 flex flex-col justify-between gap-6 border-b lg:border-b-0 lg:border-r ${gridBorder}`}
         >
-          <div className="space-y-4">
+          <div className="space-y-5">
             <div className="flex flex-wrap items-start gap-4">
               {!imageError ? (
                 <img
@@ -57,33 +64,35 @@ export function HeroSection() {
                   alt={profileData.name}
                   data-testid="profile-avatar-img"
                   onError={() => setImageError(true)}
-                  className={`w-16 h-16 rounded-xl border object-cover shrink-0 ${tokens.border}`}
+                  className={`w-16 h-16 border object-cover shrink-0 ${gridBorder}`}
                 />
               ) : (
                 <div
                   data-testid="profile-avatar-fallback"
-                  className={`flex w-16 h-16 items-center justify-center rounded-xl border font-mono text-lg font-bold shrink-0 ${tokens.border} ${tokens.secondaryText}`}
+                  className={`flex w-16 h-16 items-center justify-center border font-mono text-lg font-bold shrink-0 ${gridBorder} ${tokens.secondaryText}`}
                 >
                   AMS
                 </div>
               )}
 
               <div className="space-y-1.5 min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2.5">
                   {profileData.available && (
                     <div
                       data-testid="status-badge"
-                      className={`inline-flex items-center gap-2 rounded-full border px-3 py-0.5 text-xs font-medium ${tokens.border}`}
+                      className={`inline-flex items-center gap-2 border px-2.5 py-0.5 font-mono text-xs font-medium ${gridBorder}`}
                     >
-                      <span className="h-2 w-2 animate-pulse rounded-full bg-[#FF5A36]" />
+                      <span className="h-2 w-2 animate-pulse bg-[#FF5A36]" />
                       <span>{profileData.statusLabel[lang]}</span>
                     </div>
                   )}
 
-                  <span className={`inline-flex items-center gap-1 text-xs ${tokens.textMuted}`}>
+                  <span
+                    className={`inline-flex items-center gap-1 font-mono text-xs ${tokens.textMuted}`}
+                  >
                     <MapPin
                       aria-hidden="true"
-                      className={`h-3.5 w-3.5 ${tokens.secondaryText}`}
+                      className="h-3.5 w-3.5 text-[#2563EB]"
                     />
                     <span>{profileData.location}</span>
                   </span>
@@ -99,14 +108,14 @@ export function HeroSection() {
                   initial={shouldReduceMotion ? false : { opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.25 }}
-                  className={`font-mono text-xs font-semibold sm:text-sm ${tokens.secondaryText}`}
+                  className="font-mono text-xs font-semibold text-[#2563EB] sm:text-sm"
                 >
                   {profileData.roles[roleIndex]}
                 </motion.p>
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               <p className="text-base font-medium leading-snug sm:text-lg">
                 {profileData.headline[lang]}
               </p>
@@ -119,37 +128,45 @@ export function HeroSection() {
             </div>
           </div>
 
-          <div className={`space-y-4 pt-3 border-t ${tokens.border}`}>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <ul role="list" className="flex flex-wrap gap-1.5">
-                {profileData.coreStack.map((tech) => (
-                  <li
-                    key={tech}
-                    className={`text-xs px-2.5 py-1 rounded-md border font-mono font-medium ${tokens.border}`}
-                  >
-                    {tech}
-                  </li>
-                ))}
-              </ul>
+          <div className={`space-y-5 pt-5 border-t ${gridBorder}`}>
+            <div
+              className={`grid sm:grid-cols-2 border ${gridBorder} divide-y sm:divide-y-0 sm:divide-x ${
+                theme === "dark" ? "divide-[#232329]" : "divide-[#E5E3DC]"
+              }`}
+            >
+              <div className="p-3">
+                <ul role="list" className="flex flex-wrap gap-1.5">
+                  {profileData.coreStack.map((tech) => (
+                    <li
+                      key={tech}
+                      className={`text-xs px-2 py-0.5 border font-mono font-medium ${gridBorder}`}
+                    >
+                      {tech}
+                    </li>
+                  ))}
+                </ul>
+              </div>
 
-              <ul role="list" className="flex flex-wrap gap-1.5">
-                {profileData.exploringStack.map((item) => (
-                  <li
-                    key={item}
-                    className="text-xs px-2.5 py-1 rounded-md border border-[#FF5A36]/40 font-mono font-medium text-[#FF5A36]"
-                  >
-                    {item}
-                  </li>
-                ))}
-                {profileData.softSkills.map((skill) => (
-                  <li
-                    key={skill}
-                    className={`text-xs px-2.5 py-1 rounded-md border font-medium ${tokens.border} ${tokens.textMuted}`}
-                  >
-                    {skill}
-                  </li>
-                ))}
-              </ul>
+              <div className="p-3">
+                <ul role="list" className="flex flex-wrap gap-1.5">
+                  {profileData.exploringStack.map((item) => (
+                    <li
+                      key={item}
+                      className="text-xs px-2 py-0.5 border border-[#FF5A36]/50 font-mono font-medium text-[#FF5A36]"
+                    >
+                      {item}
+                    </li>
+                  ))}
+                  {profileData.softSkills.map((skill) => (
+                    <li
+                      key={skill}
+                      className={`text-xs px-2 py-0.5 border font-medium ${gridBorder} ${tokens.textMuted}`}
+                    >
+                      {skill}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
@@ -157,7 +174,7 @@ export function HeroSection() {
                 type="button"
                 data-testid="btn-explore-projects"
                 onClick={handleExploreProjects}
-                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold sm:text-sm transition-opacity hover:opacity-90 ${tokens.secondaryBg}`}
+                className="inline-flex items-center gap-2 bg-[#2563EB] px-4 py-2.5 text-xs font-semibold text-white sm:text-sm transition-opacity hover:opacity-90"
               >
                 <span>{lang === "id" ? "Lihat Proyek" : "View Projects"}</span>
                 <ArrowDownRight aria-hidden="true" className="h-4 w-4" />
@@ -167,7 +184,7 @@ export function HeroSection() {
                 type="button"
                 data-testid="btn-download-cv"
                 onClick={handleDownloadCv}
-                className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-xs font-semibold sm:text-sm transition-colors hover:border-[#2563EB] ${tokens.border} ${tokens.secondaryText}`}
+                className={`inline-flex items-center gap-2 border px-4 py-2.5 text-xs font-semibold sm:text-sm transition-colors hover:border-[#2563EB] ${gridBorder} ${tokens.secondaryText}`}
               >
                 <FileText aria-hidden="true" className="h-4 w-4" />
                 <span>{lang === "id" ? "Unduh CV" : "Download CV"}</span>
@@ -182,7 +199,9 @@ export function HeroSection() {
         </div>
 
         <div
-          className={`lg:col-span-5 rounded-2xl border overflow-hidden min-h-[340px] lg:min-h-full flex shadow-sm backdrop-blur-md [&>*]:h-full [&>*]:w-full [&>*]:border-0 [&>*]:rounded-none [&>*]:shadow-none ${tokens.bgSurface} ${tokens.border}`}
+          className={`lg:col-span-5 border flex items-center justify-center overflow-hidden ${gridBorder} ${
+            theme === "dark" ? "bg-[#0B0D12]" : "bg-white"
+          } dark:bg-[#0B0D12]`}
         >
           <InteractiveFace3D />
         </div>

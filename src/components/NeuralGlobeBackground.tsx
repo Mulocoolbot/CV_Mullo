@@ -6,62 +6,62 @@ import type { Group } from "three";
 import { usePreferences } from "@/hooks/usePreferences";
 import type { ThemeMode } from "@/types/cv";
 
-const SPHERE_RADIUS = 2.65;
-const NODE_COUNT = 130;
-const LINK_THRESHOLD = 0.92;
+const GLOBE_RADIUS = 2.65;
+const OCCLUSION_RADIUS = 2.63;
+const LATITUDE_RINGS = 18;
+const LONGITUDE_MERIDIANS = 24;
+const RING_SEGMENTS = 72;
 
-function buildNeuralSphereData() {
-  const nodes: [number, number, number][] = [];
-  const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+function buildGlobeGridPositions() {
+  const vertices: number[] = [];
 
-  for (let i = 0; i < NODE_COUNT; i += 1) {
-    const unitY = 1 - (i / (NODE_COUNT - 1)) * 2;
-    const ringRadius = Math.sqrt(Math.max(0, 1 - unitY * unitY));
-    const theta = goldenAngle * i;
+  for (let i = 1; i <= LATITUDE_RINGS; i += 1) {
+    const phi = (i / (LATITUDE_RINGS + 1)) * Math.PI;
+    const y = Math.cos(phi) * GLOBE_RADIUS;
+    const ringRadius = Math.sin(phi) * GLOBE_RADIUS;
 
-    nodes.push([
-      Math.cos(theta) * ringRadius * SPHERE_RADIUS,
-      unitY * SPHERE_RADIUS,
-      Math.sin(theta) * ringRadius * SPHERE_RADIUS,
-    ]);
-  }
+    for (let step = 0; step < RING_SEGMENTS; step += 1) {
+      const thetaStart = (step / RING_SEGMENTS) * Math.PI * 2;
+      const thetaEnd = ((step + 1) / RING_SEGMENTS) * Math.PI * 2;
 
-  const secondaryCoords: number[] = [];
-  const tertiaryCoords: number[] = [];
-
-  for (let i = 0; i < nodes.length; i += 1) {
-    const [x, y, z] = nodes[i];
-    const mod = i % 20;
-    const isTertiary = mod === 0 || mod === 7 || mod === 14;
-    if (isTertiary) {
-      tertiaryCoords.push(x, y, z);
-    } else {
-      secondaryCoords.push(x, y, z);
+      vertices.push(
+        Math.cos(thetaStart) * ringRadius,
+        y,
+        Math.sin(thetaStart) * ringRadius,
+        Math.cos(thetaEnd) * ringRadius,
+        y,
+        Math.sin(thetaEnd) * ringRadius
+      );
     }
   }
 
-  const synapseCoords: number[] = [];
-  for (let i = 0; i < nodes.length; i += 1) {
-    const [ax, ay, az] = nodes[i];
-    for (let j = i + 1; j < nodes.length; j += 1) {
-      const [bx, by, bz] = nodes[j];
-      const dx = ax - bx;
-      const dy = ay - by;
-      const dz = az - bz;
-      if (Math.hypot(dx, dy, dz) < LINK_THRESHOLD) {
-        synapseCoords.push(ax, ay, az, bx, by, bz);
-      }
+  for (let j = 0; j < LONGITUDE_MERIDIANS; j += 1) {
+    const theta = (j / LONGITUDE_MERIDIANS) * Math.PI * 2;
+    const cosTheta = Math.cos(theta);
+    const sinTheta = Math.sin(theta);
+
+    for (let step = 0; step < RING_SEGMENTS; step += 1) {
+      const phiStart = (step / RING_SEGMENTS) * Math.PI;
+      const phiEnd = ((step + 1) / RING_SEGMENTS) * Math.PI;
+
+      const rStart = Math.sin(phiStart) * GLOBE_RADIUS;
+      const rEnd = Math.sin(phiEnd) * GLOBE_RADIUS;
+
+      vertices.push(
+        rStart * cosTheta,
+        Math.cos(phiStart) * GLOBE_RADIUS,
+        rStart * sinTheta,
+        rEnd * cosTheta,
+        Math.cos(phiEnd) * GLOBE_RADIUS,
+        rEnd * sinTheta
+      );
     }
   }
 
-  return {
-    linePositions: new Float32Array(synapseCoords),
-    cobaltNodePositions: new Float32Array(secondaryCoords),
-    coralNodePositions: new Float32Array(tertiaryCoords),
-  };
+  return new Float32Array(vertices);
 }
 
-const neuralSphereData = buildNeuralSphereData();
+const globeGridPositions = buildGlobeGridPositions();
 
 class GlobeCanvasBoundary extends Component<
   { children: ReactNode },
@@ -81,66 +81,43 @@ class GlobeCanvasBoundary extends Component<
   }
 }
 
-function RotatingNeuralGlobe({ theme }: { theme: ThemeMode }) {
+function Y2KGridGlobe({ theme }: { theme: ThemeMode }) {
   const groupRef = useRef<Group>(null);
-  const secondaryColor = theme === "light" ? "#2563EB" : "#3B82F6";
+  const isDark = theme === "dark";
 
-  useFrame(({ clock }, delta) => {
+  useFrame((_, delta) => {
     if (!groupRef.current) return;
-    groupRef.current.rotation.y += delta * 0.14;
-    groupRef.current.rotation.x = Math.sin(clock.getElapsedTime() * 0.25) * 0.12;
+    groupRef.current.rotation.y =
+      (groupRef.current.rotation.y + delta * 0.18) % (Math.PI * 2);
   });
 
-  const nodeLayers = [
-    {
-      id: "cobalt-nodes",
-      positions: neuralSphereData.cobaltNodePositions,
-      color: secondaryColor,
-      size: 0.055,
-      opacity: theme === "light" ? 0.78 : 0.85,
-    },
-    {
-      id: "coral-nodes",
-      positions: neuralSphereData.coralNodePositions,
-      color: "#FF5A36",
-      size: 0.072,
-      opacity: 0.92,
-    },
-  ];
-
   return (
-    <group ref={groupRef}>
-      <lineSegments>
-        <bufferGeometry>
-          <bufferAttribute
-            attach="attributes-position"
-            args={[neuralSphereData.linePositions, 3]}
+    <group rotation={[0.52, 0, -0.35]}>
+      <group ref={groupRef}>
+        <mesh>
+          <sphereGeometry args={[OCCLUSION_RADIUS, 48, 48]} />
+          <meshBasicMaterial
+            color={isDark ? "#0A0A0C" : "#F7F6F2"}
+            polygonOffset
+            polygonOffsetFactor={1}
+            polygonOffsetUnits={1}
           />
-        </bufferGeometry>
-        <lineBasicMaterial
-          color={secondaryColor}
-          transparent
-          opacity={theme === "light" ? 0.22 : 0.28}
-        />
-      </lineSegments>
+        </mesh>
 
-      {nodeLayers.map((layer) => (
-        <points key={layer.id}>
+        <lineSegments>
           <bufferGeometry>
             <bufferAttribute
               attach="attributes-position"
-              args={[layer.positions, 3]}
+              args={[globeGridPositions, 3]}
             />
           </bufferGeometry>
-          <pointsMaterial
-            color={layer.color}
-            size={layer.size}
-            sizeAttenuation
+          <lineBasicMaterial
+            color={isDark ? "#F4F4F6" : "#111111"}
             transparent
-            opacity={layer.opacity}
+            opacity={isDark ? 0.22 : 0.16}
           />
-        </points>
-      ))}
+        </lineSegments>
+      </group>
     </group>
   );
 }
@@ -152,13 +129,15 @@ export function NeuralGlobeBackground() {
     <div
       data-testid="neural-globe-bg"
       aria-hidden="true"
-      className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-45"
+      className="fixed inset-0 pointer-events-none z-0 overflow-hidden"
     >
-      <GlobeCanvasBoundary>
-        <Canvas camera={{ position: [0, 0, 5.8], fov: 45 }}>
-          <RotatingNeuralGlobe theme={theme} />
-        </Canvas>
-      </GlobeCanvasBoundary>
+      <div data-testid="y2k-globe-meridians" className="h-full w-full">
+        <GlobeCanvasBoundary>
+          <Canvas camera={{ position: [0, 0, 5.8], fov: 45 }}>
+            <Y2KGridGlobe theme={theme} />
+          </Canvas>
+        </GlobeCanvasBoundary>
+      </div>
     </div>
   );
 }
