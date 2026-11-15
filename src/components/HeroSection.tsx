@@ -199,9 +199,11 @@ export function HeroSection() {
         </div>
 
         <div
-          className={`lg:col-span-5 border flex items-center justify-center overflow-hidden ${gridBorder} ${
-            theme === "dark" ? "bg-[#0B0D12]" : "bg-white"
-          } dark:bg-[#0B0D12]`}
+          className={`lg:col-span-5 border flex items-stretch overflow-hidden ${
+            theme === "dark"
+              ? "bg-[#12151E] border-[#222634]"
+              : "bg-white border-[#E2E0D8]"
+          }`}
         >
           <InteractiveFace3D />
         </div>
