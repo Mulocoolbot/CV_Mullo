@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Printer, X } from "lucide-react";
 import { timelineData } from "@/data/experience";
 import { profileData } from "@/data/profile";
@@ -16,6 +18,23 @@ export function AtsResumeModal({ isOpen, onClose }: AtsResumeModalProps) {
   const { lang, theme, accent } = usePreferences();
   const currentAccent = accentPalette[accent];
 
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) {
     return null;
   }
@@ -30,7 +49,7 @@ export function AtsResumeModal({ isOpen, onClose }: AtsResumeModalProps) {
     (item) => item.category !== "education"
   );
 
-  return (
+  const modalContent = (
     <div
       data-testid="ats-resume-modal"
       role="dialog"
@@ -85,19 +104,24 @@ export function AtsResumeModal({ isOpen, onClose }: AtsResumeModalProps) {
         </div>
 
         <article
+          id="ats-resume-sheet"
           data-testid="ats-resume-sheet"
-          className="space-y-6 rounded-2xl border border-zinc-300 bg-white p-6 text-zinc-900 shadow-sm sm:p-10 print:rounded-none print:border-0 print:p-6 print:shadow-none"
+          className="space-y-6 rounded-2xl border border-zinc-300 bg-white p-6 text-black shadow-sm sm:p-10 print:w-full print:max-w-none print:rounded-none print:border-0 print:bg-white print:p-6 print:text-black print:shadow-none"
         >
           <header className="space-y-2 border-b-2 border-zinc-900 pb-4">
             <h1 className="text-2xl font-bold uppercase tracking-tight sm:text-3xl">
               {profileData.name}
             </h1>
             <p className="text-sm font-semibold text-zinc-700">
-              {profileData.roles.join(" · ")}
+              {profileData.roles.join(", ")}
             </p>
-            <p className="text-xs leading-relaxed text-zinc-700">
-              {`Bandar Lampung, Indonesia | ${contactConfig.whatsappRaw} | ${contactConfig.email} | github.com/Mulocoolbot | instagram.com/mullo._s`}
-            </p>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs leading-relaxed text-zinc-700">
+              <span>Bandar Lampung, Indonesia</span>
+              <span>{contactConfig.whatsappRaw}</span>
+              <span>{contactConfig.email}</span>
+              <span>github.com/Mulocoolbot</span>
+              <span>instagram.com/mullo._s</span>
+            </div>
           </header>
 
           <section className="space-y-2">
@@ -124,7 +148,7 @@ export function AtsResumeModal({ isOpen, onClose }: AtsResumeModalProps) {
               </p>
             </div>
             <p className="text-xs font-semibold text-zinc-800">
-              S1 Teknik Informatika (2023 – Present, Fokus RPL &amp; Sistem
+              S1 Teknik Informatika (2023 - Present, Fokus RPL &amp; Sistem
               Informasi)
             </p>
           </section>
@@ -140,7 +164,7 @@ export function AtsResumeModal({ isOpen, onClose }: AtsResumeModalProps) {
                 <div key={item.id} className="space-y-1">
                   <div className="flex flex-wrap items-baseline justify-between gap-2 text-xs">
                     <p className="font-bold text-zinc-900">
-                      {`${item.roleOrDegree[lang]} — ${item.organization}`}
+                      {`${item.roleOrDegree[lang]}, ${item.organization}`}
                     </p>
                     <p className="font-medium text-zinc-600">
                       {item.period[lang]}
@@ -212,4 +236,10 @@ export function AtsResumeModal({ isOpen, onClose }: AtsResumeModalProps) {
       </div>
     </div>
   );
+
+  if (typeof document !== "undefined") {
+    return createPortal(modalContent, document.body);
+  }
+
+  return modalContent;
 }

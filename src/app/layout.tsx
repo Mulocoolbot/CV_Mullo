@@ -14,8 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ahmad Mulia Saputra (@Mulocoolbot) | Portfolio & CV",
-  description: "Web Developer, Mobile Apps Developer, Full Stack Developer",
+  title: "Ahmad Mulia Saputra | Web, Mobile & Full Stack Developer",
+  description:
+    "Portofolio resmi dan layanan pengembangan Web, Aplikasi Mobile (Android/iOS), serta Sistem Informasi oleh Ahmad Mulia Saputra.",
 };
 
 export default function RootLayout({

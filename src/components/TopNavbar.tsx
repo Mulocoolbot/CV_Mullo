@@ -1,25 +1,72 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { themeTokens, usePreferences } from "@/hooks/usePreferences";
 
 export function TopNavbar() {
   const { lang, theme, toggleLanguage, toggleTheme } = usePreferences();
   const tokens = themeTokens[theme];
+  const [activeSection, setActiveSection] = useState<string>("hero");
+  const [scrollProgress, setScrollProgress] = useState<number>(0);
+
+  useEffect(() => {
+    const trackedSections = [
+      "services-contact-section",
+      "experience-section",
+      "portfolio-section",
+    ];
+
+    const handleScroll = () => {
+      const maxScroll =
+        document.documentElement.scrollHeight - window.innerHeight;
+      const ratio = maxScroll > 0 ? (window.scrollY / maxScroll) * 100 : 0;
+      setScrollProgress(Math.min(100, Math.max(0, ratio)));
+
+      let currentSection = "hero";
+      for (const sectionId of trackedSections) {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          if (rect.top <= 180) {
+            currentSection = sectionId;
+            break;
+          }
+        }
+      }
+      setActiveSection(currentSection);
+    };
+
+    if (window.scrollY > 0) {
+      handleScroll();
+    }
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const navLinks = [
     {
+      sectionId: "hero",
+      testId: "nav-link-hero",
       href: "#",
       label: lang === "id" ? "Profil" : "Profile",
     },
     {
+      sectionId: "portfolio-section",
+      testId: "nav-link-portfolio",
       href: "#portfolio-section",
       label: lang === "id" ? "Proyek" : "Projects",
     },
     {
+      sectionId: "experience-section",
+      testId: "nav-link-experience",
       href: "#experience-section",
       label: lang === "id" ? "Pengalaman" : "Experience",
     },
     {
+      sectionId: "services-contact-section",
+      testId: "nav-link-services",
       href: "#services-contact-section",
       label: lang === "id" ? "Layanan" : "Services",
     },
@@ -31,11 +78,12 @@ export function TopNavbar() {
       className="fixed top-3 inset-x-0 z-40 max-w-7xl mx-auto px-4 sm:px-8"
     >
       <div
-        className={`h-14 px-5 rounded-2xl backdrop-blur-md border shadow-sm flex items-center justify-between transition-colors duration-300 ${tokens.bgSurface} ${tokens.border}`}
+        className={`relative overflow-hidden h-14 px-5 rounded-2xl backdrop-blur-md border shadow-sm flex items-center justify-between transition-colors duration-300 ${tokens.bgSurface} ${tokens.border}`}
       >
         <a
           href="#"
           data-cursor="pointer"
+          onClick={() => setActiveSection("hero")}
           className="inline-flex items-center gap-2.5 text-sm font-bold tracking-tight"
         >
           <span
@@ -47,22 +95,32 @@ export function TopNavbar() {
 
         <nav
           aria-label={lang === "id" ? "Navigasi utama" : "Primary navigation"}
-          className="hidden items-center gap-7 md:flex"
+          className="hidden items-center gap-2 md:flex"
         >
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              data-cursor="pointer"
-              className={`text-sm font-medium transition-colors ${tokens.textMuted} ${
-                theme === "light"
-                  ? "hover:text-[#2563EB]"
-                  : "hover:text-[#3B82F6]"
-              }`}
-            >
-              {link.label}
-            </a>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = activeSection === link.sectionId;
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                data-testid={link.testId}
+                data-active={isActive ? "true" : "false"}
+                data-cursor="pointer"
+                onClick={() => setActiveSection(link.sectionId)}
+                className={`rounded-lg px-2.5 py-1 text-sm font-medium transition-colors ${
+                  isActive
+                    ? "bg-[#2563EB]/10 text-[#2563EB]"
+                    : `${tokens.textMuted} ${
+                        theme === "light"
+                          ? "hover:text-[#2563EB]"
+                          : "hover:text-[#3B82F6]"
+                      }`
+                }`}
+              >
+                {link.label}
+              </a>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-3">
@@ -182,6 +240,13 @@ export function TopNavbar() {
             </span>
           </button>
         </div>
+
+        <div
+          aria-hidden="true"
+          data-testid="navbar-scroll-progress"
+          style={{ width: `${scrollProgress}%` }}
+          className="pointer-events-none absolute bottom-0 left-0 h-0.5 bg-[#2563EB] transition-all duration-150"
+        />
       </div>
     </header>
   );

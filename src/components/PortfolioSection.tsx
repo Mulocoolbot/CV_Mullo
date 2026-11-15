@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type MouseEvent } from "react";
 import {
   CheckCircle2,
   ChevronLeft,
@@ -25,6 +25,62 @@ export function PortfolioSection() {
   );
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [tiltedCard, setTiltedCard] = useState<{
+    id: string;
+    rotateX: number;
+    rotateY: number;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!selectedProject) {
+      return;
+    }
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowRight" && selectedProject.screenshots.length > 0) {
+        setActiveSlideIndex(
+          (prev) => (prev + 1) % selectedProject.screenshots.length
+        );
+      } else if (
+        event.key === "ArrowLeft" &&
+        selectedProject.screenshots.length > 0
+      ) {
+        setActiveSlideIndex(
+          (prev) =>
+            (prev - 1 + selectedProject.screenshots.length) %
+            selectedProject.screenshots.length
+        );
+      } else if (event.key === "Escape") {
+        if (isLightboxOpen) {
+          setIsLightboxOpen(false);
+        } else {
+          setSelectedProject(null);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedProject, isLightboxOpen]);
+
+  const handleCardMouseMove = (
+    event: MouseEvent<HTMLElement>,
+    projectId: string
+  ) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) {
+      setTiltedCard({ id: projectId, rotateX: 0, rotateY: 0 });
+      return;
+    }
+    const relX = (event.clientX - rect.left) / rect.width - 0.5;
+    const relY = (event.clientY - rect.top) / rect.height - 0.5;
+    const clampAngle = (value: number) => Math.max(-5, Math.min(5, value));
+    const rotateX = clampAngle(Number((-relY * 10).toFixed(2)));
+    const rotateY = clampAngle(Number((relX * 10).toFixed(2)));
+    setTiltedCard({ id: projectId, rotateX, rotateY });
+  };
 
   const handleSelectProject = (project: ProjectItem | null) => {
     setSelectedProject(project);
@@ -112,12 +168,23 @@ export function PortfolioSection() {
       </div>
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {filteredProjects.map((project) => (
-          <article
-            key={project.id}
-            data-testid={`project-card-${project.id}`}
-            className={`flex flex-col overflow-hidden rounded-2xl border shadow-sm backdrop-blur-md transition-all ${tokens.bgSurface} ${tokens.border}`}
-          >
+        {filteredProjects.map((project) => {
+          const isTilted = tiltedCard?.id === project.id;
+          const rotateX = isTilted ? tiltedCard.rotateX : 0;
+          const rotateY = isTilted ? tiltedCard.rotateY : 0;
+
+          return (
+            <article
+              key={project.id}
+              data-testid={`project-card-${project.id}`}
+              data-tilt-active={isTilted ? "true" : "false"}
+              onMouseMove={(event) => handleCardMouseMove(event, project.id)}
+              onMouseLeave={() => setTiltedCard(null)}
+              style={{
+                transform: `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+              }}
+              className={`flex flex-col overflow-hidden rounded-2xl border shadow-sm backdrop-blur-md transition-all duration-200 ease-out ${tokens.bgSurface} ${tokens.border}`}
+            >
             <div className="relative overflow-hidden">
               <img
                 src={project.screenshots[0]}
@@ -195,7 +262,8 @@ export function PortfolioSection() {
               </div>
             </div>
           </article>
-        ))}
+          );
+        })}
       </div>
 
       {selectedProject && (

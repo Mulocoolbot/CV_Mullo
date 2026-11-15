@@ -168,3 +168,29 @@
     }
   }
 }
+
+@media print {
+  header[data-testid="top-navbar"],
+  [data-testid="neural-globe-bg"],
+  [data-testid="custom-cursor"],
+  [data-testid="cv-pending-banner"] {
+    display: none !important;
+  }
+
+  body:has(#ats-resume-sheet) main,
+  body:has(#ats-resume-sheet) [data-testid="hero-section"],
+  body:has(#ats-resume-sheet) [data-testid="portfolio-section"],
+  body:has(#ats-resume-sheet) [data-testid="experience-section"],
+  body:has(#ats-resume-sheet) [data-testid="services-contact-section"] {
+    display: none !important;
+  }
+
+  #ats-resume-sheet {
+    width: 100% !important;
+    max-width: 100% !important;
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+    box-shadow: none !important;
+    border: 0 !important;
+  }
+}
