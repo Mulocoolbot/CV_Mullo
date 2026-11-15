@@ -1,9 +1,9 @@
-name: CI & Deployment Verification
+name: Verify, Build & Deploy GitHub Pages
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  VITE_CONFIG_NATIVE_IGNORE_WARNING: 'true'
+  VITE_CONFIG_NATIVE_IGNORE_WARNING: "true"
 
 jobs:
   verify-and-build:
@@ -24,11 +24,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js 22
+      - name: Set up Node.js 22 LTS
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-          cache: npm
+          node-version: "22"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm install
@@ -36,13 +36,15 @@ jobs:
       - name: Run Black Box test suite
         run: npm test
 
-      - name: Build production bundle
+      - name: Build static export for GitHub Pages
+        env:
+          NEXT_PUBLIC_BASE_PATH: "/CV_Mullo"
         run: npm run build
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload Pages artifact
+      - name: Upload static artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./out

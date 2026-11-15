@@ -16,14 +16,7 @@ import { TrefoilKnotSculpture } from "@/components/WireframeSculptures3D";
 import { projectCategories, projectsData } from "@/data/projects";
 import { themeTokens, usePreferences } from "@/hooks/usePreferences";
 import type { ProjectCategory, ProjectItem } from "@/types/cv";
-
-function withBasePath(src: string): string {
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
-  if (!basePath || !src.startsWith("/") || src.startsWith(`${basePath}/`)) {
-    return src;
-  }
-  return `${basePath}${src}`;
-}
+import { getAssetPath } from "@/utils/assetPath";
 
 export function PortfolioSection() {
   const { lang, theme } = usePreferences();
@@ -211,7 +204,7 @@ export function PortfolioSection() {
             >
               <div className={`relative overflow-hidden border-b ${gridBorder}`}>
                 <img
-                  src={withBasePath(project.screenshots[0])}
+                  src={getAssetPath(project.screenshots[0])}
                   alt={project.title}
                   data-testid={`project-thumb-${project.id}`}
                   className="h-40 w-full object-cover object-top"
@@ -353,7 +346,7 @@ export function PortfolioSection() {
                 >
                   <div className={`relative overflow-hidden border bg-[#0D0F12] ${gridBorder}`}>
                     <img
-                      src={withBasePath(
+                      src={getAssetPath(
                         selectedProject.screenshots[activeSlideIndex]
                       )}
                       alt={
@@ -432,7 +425,7 @@ export function PortfolioSection() {
                           }`}
                         >
                           <img
-                            src={withBasePath(shot)}
+                            src={getAssetPath(shot)}
                             alt={
                               selectedProject.screenshotCaptions[lang][idx] ??
                               selectedProject.title
@@ -588,7 +581,7 @@ export function PortfolioSection() {
             </button>
 
             <img
-              src={withBasePath(selectedProject.screenshots[activeSlideIndex])}
+              src={getAssetPath(selectedProject.screenshots[activeSlideIndex])}
               alt={
                 selectedProject.screenshotCaptions[lang][activeSlideIndex] ??
                 selectedProject.title

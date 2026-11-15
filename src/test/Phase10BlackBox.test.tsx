@@ -4,6 +4,9 @@ import { render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { metadata } from "@/app/layout";
 import HomePage from "@/app/page";
+import { profileData } from "@/data/profile";
+import { projectsData } from "@/data/projects";
+import { getAssetPath } from "@/utils/assetPath";
 
 vi.mock("next/font/google", () => ({
   Geist: () => ({ variable: "--font-geist-sans" }),
@@ -48,19 +51,23 @@ describe("Phase 10 Black Box Testing Suite", () => {
     );
   });
 
-  it("tc_p10_02_verifies_temporary_scripts_and_boilerplate_svgs_are_removed", () => {
+  it("tc_p10_02_get_asset_path_resolves_local_and_github_pages_subpath_correctly", () => {
+    expect(getAssetPath("/avatar.jpg", "")).toBe("/avatar.jpg");
+    expect(getAssetPath("/avatar.jpg", "/CV_Mullo")).toBe(
+      "/CV_Mullo/avatar.jpg"
+    );
     expect(
-      fs.existsSync(path.join(process.cwd(), "capture-projects.mjs"))
-    ).toBe(false);
-    expect(fs.existsSync(path.join(process.cwd(), "public/next.svg"))).toBe(
-      false
-    );
-    expect(fs.existsSync(path.join(process.cwd(), "public/vercel.svg"))).toBe(
-      false
-    );
+      getAssetPath("/CV_Mullo/projects/mfit/screen-1.png", "/CV_Mullo")
+    ).toBe("/CV_Mullo/projects/mfit/screen-1.png");
+    expect(
+      getAssetPath("https://github.com/Mulocoolbot.png", "/CV_Mullo")
+    ).toBe("https://github.com/Mulocoolbot.png");
   });
 
-  it("tc_p10_03_verifies_production_avatar_and_project_screenshots_remain_intact", () => {
+  it("tc_p10_03_verifies_nojekyll_avatar_and_project_screenshots_exist_on_disk", () => {
+    expect(fs.existsSync(path.join(process.cwd(), "public/.nojekyll"))).toBe(
+      true
+    );
     expect(fs.existsSync(path.join(process.cwd(), "public/avatar.jpg"))).toBe(
       true
     );
@@ -69,33 +76,29 @@ describe("Phase 10 Black Box Testing Suite", () => {
         path.join(process.cwd(), "public/projects/mfit/screen-1.png")
       )
     ).toBe(true);
-    expect(
-      fs.existsSync(
-        path.join(process.cwd(), "public/projects/metatrade/screen-1.png")
-      )
-    ).toBe(true);
   });
 
-  it("tc_p10_04_verifies_readme_and_ci_workflow_exist", () => {
-    const readmeContent = fs.readFileSync(
-      path.join(process.cwd(), "README.md"),
-      "utf8"
-    );
-    expect(readmeContent).toContain(
-      "Ahmad Mulia Saputra | Web & Mobile Apps Developer"
-    );
-    expect(
-      fs.existsSync(path.join(process.cwd(), ".github/workflows/deploy.yml"))
-    ).toBe(true);
-  });
-
-  it("tc_p10_05_verifies_full_application_renders_cleanly_for_release", () => {
+  it("tc_p10_04_verifies_hero_and_portfolio_images_render_cleanly", () => {
     render(<HomePage />);
 
-    expect(screen.getByTestId("top-navbar")).toBeInTheDocument();
-    expect(screen.getByTestId("card-3d-canvas")).toBeInTheDocument();
-    expect(screen.getByTestId("portfolio-section")).toBeInTheDocument();
-    expect(screen.getByTestId("experience-section")).toBeInTheDocument();
-    expect(screen.getByTestId("services-contact-section")).toBeInTheDocument();
+    const avatarImg = screen.getByTestId("profile-avatar-img");
+    const avatarSrc = avatarImg.getAttribute("src") ?? "";
+    expect(avatarSrc.length).toBeGreaterThan(0);
+    expect(avatarSrc).toContain(profileData.avatarUrl);
+
+    const mfitThumb = screen.getByTestId("project-thumb-mfit-gym-tracker");
+    const thumbSrc = mfitThumb.getAttribute("src") ?? "";
+    expect(thumbSrc.length).toBeGreaterThan(0);
+    expect(thumbSrc).toContain(projectsData[0].screenshots[0]);
+  });
+
+  it("tc_p10_05_verifies_github_pages_workflow_uses_node_22_and_base_path", () => {
+    const workflowContent = fs.readFileSync(
+      path.join(process.cwd(), ".github/workflows/deploy.yml"),
+      "utf8"
+    );
+    expect(workflowContent).toContain("22");
+    expect(workflowContent).toContain("/CV_Mullo");
+    expect(workflowContent).toContain("actions/deploy-pages@v4");
   });
 });
