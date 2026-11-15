@@ -8,6 +8,14 @@ import { OpticalVortexSculpture } from "@/components/WireframeSculptures3D";
 import { profileData } from "@/data/profile";
 import { themeTokens, usePreferences } from "@/hooks/usePreferences";
 
+function withBasePath(src: string): string {
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+  if (!basePath || !src.startsWith("/") || src.startsWith(`${basePath}/`)) {
+    return src;
+  }
+  return `${basePath}${src}`;
+}
+
 export function HeroSection() {
   const { lang, theme } = usePreferences();
   const tokens = themeTokens[theme];
@@ -60,7 +68,7 @@ export function HeroSection() {
             <div className="flex flex-wrap items-start gap-4">
               {!imageError ? (
                 <img
-                  src={profileData.avatarUrl}
+                  src={withBasePath(profileData.avatarUrl)}
                   alt={profileData.name}
                   data-testid="profile-avatar-img"
                   onError={() => setImageError(true)}
