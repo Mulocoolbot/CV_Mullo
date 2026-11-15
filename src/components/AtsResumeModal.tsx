@@ -113,7 +113,7 @@ export function AtsResumeModal({ isOpen, onClose }: AtsResumeModalProps) {
               {profileData.name}
             </h1>
             <p className="text-sm font-semibold text-zinc-700">
-              {profileData.roles.join(", ")}
+              Web &amp; Mobile Apps Developer | Full Stack Developer
             </p>
             <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs leading-relaxed text-zinc-700">
               <span>Bandar Lampung, Indonesia</span>

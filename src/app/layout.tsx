@@ -14,9 +14,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Ahmad Mulia Saputra | Web, Mobile & Full Stack Developer",
+  title: "Ahmad Mulia Saputra | Web & Mobile Apps Developer",
   description:
-    "Portofolio resmi dan layanan pengembangan Web, Aplikasi Mobile (Android/iOS), serta Sistem Informasi oleh Ahmad Mulia Saputra.",
+    "Official Web CV, Interactive 3D Portfolio, and Freelance Software Engineering Hub of Ahmad Mulia Saputra — Web, Mobile Apps, and Full Stack Developer.",
+  openGraph: {
+    title: "Ahmad Mulia Saputra | Web & Mobile Apps Developer",
+    description:
+      "Web Developer, Mobile Apps Developer & Full Stack Developer based in Bandar Lampung, Indonesia.",
+    siteName: "Ahmad Mulia Saputra | Web & Mobile Apps Developer",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
