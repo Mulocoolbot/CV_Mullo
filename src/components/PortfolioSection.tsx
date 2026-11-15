@@ -12,7 +12,7 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
-import { IllusionLoopSculpture3D } from "@/components/IllusionLoopSculpture3D";
+import { TrefoilKnotSculpture } from "@/components/WireframeSculptures3D";
 import { projectCategories, projectsData } from "@/data/projects";
 import { themeTokens, usePreferences } from "@/hooks/usePreferences";
 import type { ProjectCategory, ProjectItem } from "@/types/cv";
@@ -179,7 +179,7 @@ export function PortfolioSection() {
         </div>
 
         <div className="lg:col-span-4 h-44 relative flex items-center justify-center">
-          <IllusionLoopSculpture3D variant="trefoil" className="w-full h-full" />
+          <TrefoilKnotSculpture className="w-full h-full" />
         </div>
       </div>
 

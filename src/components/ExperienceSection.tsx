@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Building2, Calendar, CheckCircle2 } from "lucide-react";
-import { IllusionLoopSculpture3D } from "@/components/IllusionLoopSculpture3D";
+import { RubiksCubeSculpture } from "@/components/WireframeSculptures3D";
 import {
   skillCategories,
   skillsData,
@@ -71,10 +71,7 @@ export function ExperienceSection() {
             </h2>
 
             <div className={`h-44 border mb-5 ${gridBorder}`}>
-              <IllusionLoopSculpture3D
-                variant="rubik"
-                className="w-full h-full"
-              />
+              <RubiksCubeSculpture className="w-full h-full" />
             </div>
 
             <div

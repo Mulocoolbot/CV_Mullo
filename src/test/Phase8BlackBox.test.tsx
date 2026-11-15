@@ -32,7 +32,9 @@ describe("Phase 8 Black Box Testing Suite", () => {
   it("tc_p8_01_topological_face_renders_distinct_occlusion_eyeballs_eyebrows_and_mouth_layers", () => {
     render(<HomePage />);
 
+    const vortexTrigger = screen.getByTestId("vortex-sculpture-trigger");
     const faceTrigger = screen.getByTestId("neural-face-trigger");
+    expect(vortexTrigger).toContainElement(faceTrigger);
     expect(faceTrigger).toContainElement(
       screen.getByTestId("face-occlusion-mesh")
     );
@@ -52,22 +54,29 @@ describe("Phase 8 Black Box Testing Suite", () => {
     vi.useFakeTimers();
     render(<HomePage />);
 
+    const vortexTrigger = screen.getByTestId("vortex-sculpture-trigger");
     const trigger = screen.getByTestId("neural-face-trigger");
+    expect(vortexTrigger).toHaveAttribute("data-surprised", "false");
     expect(trigger).toHaveAttribute("data-surprised", "false");
 
-    fireEvent.click(trigger);
+    fireEvent.click(vortexTrigger);
+    expect(vortexTrigger).toHaveAttribute("data-surprised", "true");
     expect(trigger).toHaveAttribute("data-surprised", "true");
 
     act(() => {
       vi.advanceTimersByTime(1000);
     });
+    expect(vortexTrigger).toHaveAttribute("data-surprised", "false");
     expect(trigger).toHaveAttribute("data-surprised", "false");
   });
 
   it("tc_p8_03_y2k_meridian_grid_globe_renders_in_background", () => {
     render(<HomePage />);
 
-    expect(screen.getByTestId("neural-globe-bg")).toBeInTheDocument();
+    const globe = screen.getByTestId("neural-globe-bg");
+    expect(globe).toBeInTheDocument();
+    expect(globe).toHaveAttribute("data-globe-style", "y2k-meridian");
+    expect(globe).toHaveAttribute("data-theme-mode", "light");
     expect(screen.getByTestId("y2k-globe-meridians")).toBeInTheDocument();
   });
 
@@ -76,13 +85,16 @@ describe("Phase 8 Black Box Testing Suite", () => {
 
     expect(screen.getByTestId("sculpture-trefoil-knot")).toHaveAttribute(
       "data-loop-mode",
-      "seamless-3d"
+      "rope-flow"
     );
   });
 
   it("tc_p8_05_experience_section_mounts_seamless_3d_twisting_rubik_cube_sculpture", () => {
     render(<HomePage />);
 
+    const rubik = screen.getByTestId("sculpture-rubiks-cube");
+    expect(rubik).toHaveAttribute("data-slice-mode", "all-9-random");
+    expect(rubik).toHaveAttribute("data-loop-mode", "seamless-3d");
     expect(screen.getByTestId("sculpture-rubik-cube")).toHaveAttribute(
       "data-loop-mode",
       "seamless-3d"

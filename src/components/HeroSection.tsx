@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowDownRight, FileText, MapPin } from "lucide-react";
 import { AtsResumeModal } from "@/components/AtsResumeModal";
-import { InteractiveFace3D } from "@/components/InteractiveFace3D";
+import { OpticalVortexSculpture } from "@/components/WireframeSculptures3D";
 import { profileData } from "@/data/profile";
 import { themeTokens, usePreferences } from "@/hooks/usePreferences";
 
@@ -205,7 +205,7 @@ export function HeroSection() {
               : "bg-white border-[#E2E0D8]"
           }`}
         >
-          <InteractiveFace3D />
+          <OpticalVortexSculpture />
         </div>
       </div>
     </section>
