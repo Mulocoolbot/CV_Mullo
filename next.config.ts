@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "export",
+  basePath: process.env.GITHUB_ACTIONS ? "/CV_Mullo" : "",
   transpilePackages: ["three"],
   images: {
     unoptimized: true,
@@ -8,4 +10,3 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
-
