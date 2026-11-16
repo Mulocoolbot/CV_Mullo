@@ -93,7 +93,7 @@ export interface TimelineItem {
 export interface ServicePackage {
   id: string;
   title: LocalizedText;
-  badge: LocalizedText;
+  badge?: LocalizedText;
   startingPrice: LocalizedText;
   estimatedDuration: LocalizedText;
   pricingNote: LocalizedText;
@@ -103,6 +103,36 @@ export interface ServicePackage {
     en: string[];
   };
   techStack: string[];
+}
+
+export interface PrimaryServicePackage extends ServicePackage {
+  id: "landing-page" | "web-app-si" | "mobile-android" | (string & {});
+  price: LocalizedText;
+  duration: LocalizedText;
+  audience: LocalizedText;
+  benefits: {
+    id: string[];
+    en: string[];
+  };
+  referenceProject: string;
+  techTags: string[];
+  featured: boolean;
+  whatsappMessage: LocalizedText;
+}
+
+export interface CustomConsultationBanner {
+  id: string;
+  title: LocalizedText;
+  price: LocalizedText;
+  startingPrice: LocalizedText;
+  description: LocalizedText;
+  whatsappMessage: LocalizedText;
+}
+
+export interface FreelanceServicesCatalog {
+  primaryPackages: PrimaryServicePackage[];
+  customBanner: CustomConsultationBanner;
+  scopeNotes: LocalizedText;
 }
 
 export interface ContactConfig {

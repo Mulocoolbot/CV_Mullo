@@ -1,6 +1,15 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import HomePage from "@/app/page";
+import { ServicesSection } from "@/components/ServicesSection";
+import {
+  buildDirectWhatsAppUrl,
+  customBanner,
+  freelanceServicesData,
+  primaryPackages,
+  scopeNotes,
+  servicesData,
+} from "@/data/servicesData";
 
 vi.mock("@react-three/fiber", () => ({
   Canvas: () => <div data-testid="r3f-canvas-mock" />,
@@ -26,35 +35,98 @@ describe("Phase 5 Black Box Testing Suite", () => {
   it("tc_p5_01_renders_all_3_freelance_service_packages_with_starting_price_guides", () => {
     render(<HomePage />);
 
-    expect(
-      screen.getByTestId("service-card-web-and-information-systems")
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId("service-card-mobile-app-development")
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId("service-card-custom-consultation-and-part-time")
-    ).toBeInTheDocument();
+    const grid = screen.getByTestId("primary-packages-grid");
+    expect(grid).toHaveClass("grid-cols-1", "lg:grid-cols-3");
 
     expect(
-      screen.getByTestId("service-card-mobile-app-development")
-    ).toHaveTextContent("Mobile App Development (Android & Eksplorasi iOS)");
+      screen.getByTestId("service-card-landing-page")
+    ).toBeInTheDocument();
+    const featuredCard = screen.getByTestId("service-card-web-app-si");
+    expect(featuredCard).toBeInTheDocument();
+    expect(featuredCard).toHaveAttribute("data-featured", "true");
+    expect(featuredCard).toHaveClass("border-2", "border-[#2563EB]");
     expect(
-      screen.getByTestId("service-price-web-and-information-systems")
-    ).toHaveTextContent("Mulai Rp 1.500.000");
+      screen.getByTestId("service-badge-web-app-si")
+    ).toHaveTextContent("Paling Diminati");
+
+    expect(
+      screen.getByTestId("service-card-mobile-android")
+    ).toBeInTheDocument();
+
+    for (const pkg of primaryPackages) {
+      const card = screen.getByTestId(`service-card-${pkg.id}`);
+      expect(card).toHaveTextContent(pkg.audience.id);
+      expect(card).toHaveTextContent(pkg.title.id);
+      expect(screen.getByTestId(`service-price-${pkg.id}`)).toHaveTextContent(
+        pkg.price.id
+      );
+      expect(
+        screen.getByTestId(`service-duration-${pkg.id}`)
+      ).toHaveTextContent(pkg.duration.id);
+      expect(screen.getByTestId(`service-ref-${pkg.id}`)).toHaveTextContent(
+        `Ref: ${pkg.referenceProject}`
+      );
+      for (const benefit of pkg.benefits.id) {
+        expect(card).toHaveTextContent(benefit);
+      }
+      const techList = screen.getByTestId(`service-tech-${pkg.id}`);
+      for (const tag of pkg.techTags) {
+        expect(techList).toHaveTextContent(tag);
+      }
+
+      const waButton = screen.getByTestId(`btn-whatsapp-service-${pkg.id}`);
+      expect(waButton).toHaveAttribute(
+        "href",
+        `https://wa.me/6282280113212?text=${encodeURIComponent(
+          pkg.whatsappMessage.id
+        )}`
+      );
+      expect(waButton).toHaveAttribute("target", "_blank");
+      expect(waButton).toHaveAttribute("rel", "noopener noreferrer");
+    }
+
+    expect(primaryPackages).toHaveLength(3);
+    expect(servicesData.primaryPackages).toEqual(primaryPackages);
+    expect(freelanceServicesData).toEqual({
+      primaryPackages,
+      customBanner,
+      scopeNotes,
+    });
+
+    const banner = screen.getByTestId("custom-consultation-banner");
+    expect(banner).toHaveTextContent(customBanner.title.id);
+    expect(banner).toHaveTextContent(customBanner.price.id);
+    expect(banner).toHaveTextContent(customBanner.description.id);
+    expect(
+      screen.getByTestId("btn-whatsapp-custom-banner")
+    ).toHaveAttribute(
+      "href",
+      buildDirectWhatsAppUrl(customBanner.whatsappMessage.id)
+    );
+    expect(screen.getByTestId("services-scope-footnote")).toHaveTextContent(
+      scopeNotes.id
+    );
+    expect(typeof ServicesSection).toBe("function");
   });
 
   it("tc_p5_02_selecting_a_service_card_updates_the_project_brief_form_selection", () => {
     render(<HomePage />);
 
-    fireEvent.click(
-      screen.getByTestId("btn-select-service-mobile-app-development")
-    );
+    const contactBlock = screen.getByTestId("contact-brief-block");
+    expect(contactBlock).toHaveAttribute("id", "contact");
+    const scrollIntoViewMock = vi.fn();
+    contactBlock.scrollIntoView = scrollIntoViewMock;
+
+    fireEvent.click(screen.getByTestId("btn-select-service-mobile-android"));
 
     const selectElement = screen.getByTestId(
       "select-service-type"
     ) as HTMLSelectElement;
-    expect(selectElement.value).toBe("mobile-app-development");
+    expect(selectElement.value).toBe("mobile-android");
+    expect(scrollIntoViewMock).toHaveBeenCalledWith({ behavior: "smooth" });
+
+    fireEvent.click(screen.getByTestId("btn-email-custom-banner"));
+    expect(selectElement.value).toBe(customBanner.id);
   });
 
   it("tc_p5_03_whatsapp_api_and_mailto_links_encode_client_name_and_project_notes_accurately", () => {
