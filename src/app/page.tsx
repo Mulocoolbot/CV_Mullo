@@ -10,15 +10,20 @@ import { PreferencesProvider } from "@/hooks/usePreferences";
 export default function HomePage() {
   return (
     <PreferencesProvider>
-      <CustomCursor />
-      <MeridianGlobeBackground />
-      <TopNavbar />
-      <main id="main-content" className="relative z-10">
-        <HeroSection />
-        <PortfolioSection />
-        <ExperienceSection />
-        <ServicesAndContactSection />
-      </main>
+      <div className="w-full max-w-full overflow-x-hidden">
+        <CustomCursor />
+        <MeridianGlobeBackground />
+        <TopNavbar />
+        <main
+          id="main-content"
+          className="relative z-10 w-full max-w-full overflow-x-hidden"
+        >
+          <HeroSection />
+          <PortfolioSection />
+          <ExperienceSection />
+          <ServicesAndContactSection />
+        </main>
+      </div>
     </PreferencesProvider>
   );
 }

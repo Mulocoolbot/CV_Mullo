@@ -79,9 +79,13 @@ describe("Phase 5 Black Box Testing Suite", () => {
 
     const emailHref =
       screen.getByTestId("btn-send-email").getAttribute("href") ?? "";
-    expect(emailHref.startsWith("mailto:ahmadmuliasaputra1@gmail.com")).toBe(
-      true
-    );
+    expect(
+      emailHref.startsWith("mailto:ahmadmuliasaputra1@gmail.com") ||
+        emailHref.startsWith(
+          "https://mail.google.com/mail/?view=cm&fs=1&to=ahmadmuliasaputra1%40gmail.com"
+        )
+    ).toBe(true);
+    expect(emailHref).toContain("ahmadmuliasaputra1");
   });
 
   it("tc_p5_04_verifies_contact_cards_for_whatsapp_email_instagram_and_github", () => {

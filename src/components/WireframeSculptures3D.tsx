@@ -19,6 +19,7 @@ import {
   Vector3,
   type Group,
 } from "three";
+import { useMobileDevice } from "@/hooks/useMobileDevice";
 import { usePreferences } from "@/hooks/usePreferences";
 import type { ThemeMode } from "@/types/cv";
 
@@ -185,18 +186,23 @@ function MeridianGlobeMesh({ theme }: { theme: ThemeMode }) {
 
 export function MeridianGlobeBackground() {
   const { theme } = usePreferences();
+  const { isMobile } = useMobileDevice();
 
   return (
     <div
       data-testid="neural-globe-bg"
       data-theme-mode={theme}
       data-globe-style="y2k-meridian"
+      data-mobile-optimized={isMobile ? "true" : "false"}
       aria-hidden="true"
       className="fixed inset-0 pointer-events-none z-0 overflow-hidden"
     >
       <div data-testid="y2k-globe-meridians" className="h-full w-full">
         <CanvasErrorBoundary>
-          <Canvas camera={{ position: [0, 0, 5.8], fov: 45 }}>
+          <Canvas
+            camera={{ position: [0, 0, 5.8], fov: 45 }}
+            dpr={isMobile ? [1, 1] : [1, 1.5]}
+          >
             <MeridianGlobeMesh theme={theme} />
           </Canvas>
         </CanvasErrorBoundary>
@@ -246,10 +252,12 @@ function OpticalVortexMesh({
   isSurprised,
   pointerRef,
   isDark,
+  isMobile,
 }: {
   isSurprised: boolean;
   pointerRef: MutableRefObject<{ x: number; y: number }>;
   isDark: boolean;
+  isMobile: boolean;
 }) {
   const groupRef = useRef<Group>(null);
   const flowPhaseRef = useRef(0);
@@ -352,8 +360,9 @@ function OpticalVortexMesh({
     let coralIdx = 0;
     let cobaltIdx = 0;
     let primaryIdx = 0;
+    const ringStep = isMobile ? 2 : 1;
 
-    for (let i = 0; i < VORTEX_RING_COUNT; i++) {
+    for (let i = 0; i < VORTEX_RING_COUNT; i += ringStep) {
       const s = 0.04 + ((i + phase) / VORTEX_RING_COUNT) * 0.94;
       if (i < 6 || i % 9 === 0) {
         if (coralIdx < 10) writeRingIntoArray(coralArr, coralIdx++, s);
@@ -367,6 +376,12 @@ function OpticalVortexMesh({
     coralAttr.needsUpdate = true;
     cobaltAttr.needsUpdate = true;
     primaryAttr.needsUpdate = true;
+    ringBuffers.coralWaveGeo.setDrawRange(0, coralIdx * VORTEX_SEGMENTS * 2);
+    ringBuffers.cobaltWaveGeo.setDrawRange(0, cobaltIdx * VORTEX_SEGMENTS * 2);
+    ringBuffers.primaryCoreGeo.setDrawRange(
+      0,
+      primaryIdx * VORTEX_SEGMENTS * 2,
+    );
 
     if (groupRef.current) {
       const px = pointerRef.current.x;
@@ -443,6 +458,7 @@ function OpticalVortexMesh({
 
 export function OpticalVortexSculpture() {
   const { theme } = usePreferences();
+  const { isMobile } = useMobileDevice();
   const [isSurprised, setIsSurprised] = useState(false);
   const pointerRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -474,9 +490,12 @@ export function OpticalVortexSculpture() {
     <div
       data-testid="card-3d-canvas"
       data-theme-mode={theme}
-      className={`relative w-full h-full min-h-[380px] lg:min-h-[440px] p-4 sm:p-6 overflow-hidden select-none flex items-center justify-center transition-colors duration-300 ${
-        isDark ? "bg-[#12151E]" : "bg-white"
-      }`}
+      data-mobile-optimized={isMobile ? "true" : "false"}
+      className={`relative w-full h-full overflow-hidden select-none flex items-center justify-center transition-colors duration-300 ${
+        isMobile
+          ? "min-h-[230px] max-h-[250px] p-3"
+          : "min-h-[380px] lg:min-h-[440px] p-4 sm:p-6"
+      } ${isDark ? "bg-[#12151E]" : "bg-white"}`}
     >
       <div
         data-testid="vortex-sculpture-trigger"
@@ -487,14 +506,20 @@ export function OpticalVortexSculpture() {
         <div
           data-testid="neural-face-trigger"
           data-surprised={isSurprised ? "true" : "false"}
+          onClick={handleVortexClick}
+          onTouchStart={handleVortexClick}
           className="w-full h-full flex items-center justify-center"
         >
           <CanvasErrorBoundary>
-            <Canvas camera={{ position: [0, 0, 3.65], fov: 38 }} dpr={[1, 2]}>
+            <Canvas
+              camera={{ position: [0, 0, 3.65], fov: 38 }}
+              dpr={isMobile ? [1, 1] : [1, 2]}
+            >
               <OpticalVortexMesh
                 isSurprised={isSurprised}
                 pointerRef={pointerRef}
                 isDark={isDark}
+                isMobile={isMobile}
               />
             </Canvas>
           </CanvasErrorBoundary>
@@ -886,6 +911,7 @@ export function TrefoilKnotSculpture({
   className?: string;
 }) {
   const { theme } = usePreferences();
+  const { isMobile } = useMobileDevice();
   const strokeColor = theme === "dark" ? "#F4F4F6" : "#111111";
   const accentColor = "#2563EB";
   const occlusionColor = theme === "dark" ? "#0A0A0C" : "#F7F6F2";
@@ -895,11 +921,15 @@ export function TrefoilKnotSculpture({
       data-testid="sculpture-trefoil-knot"
       data-loop-mode="rope-flow"
       data-theme-mode={theme}
+      data-mobile-optimized={isMobile ? "true" : "false"}
       aria-hidden="true"
-      className={className}
+      className={isMobile ? "w-full h-28 md:h-40" : className}
     >
       <CanvasErrorBoundary>
-        <Canvas camera={{ position: [0, 0, 4.2], fov: 40 }}>
+        <Canvas
+          camera={{ position: [0, 0, 4.2], fov: 40 }}
+          dpr={isMobile ? [1, 1] : [1, 2]}
+        >
           <TrefoilKnotMesh
             strokeColor={strokeColor}
             accentColor={accentColor}
@@ -1141,6 +1171,7 @@ export function RubiksCubeSculpture({
   className?: string;
 }) {
   const { theme } = usePreferences();
+  const { isMobile } = useMobileDevice();
   const strokeColor = theme === "dark" ? "#F4F4F6" : "#111111";
   const occlusionColor = theme === "dark" ? "#0A0A0C" : "#F7F6F2";
 
@@ -1150,8 +1181,9 @@ export function RubiksCubeSculpture({
       data-slice-mode="all-9-random"
       data-loop-mode="seamless-3d"
       data-theme-mode={theme}
+      data-mobile-optimized={isMobile ? "true" : "false"}
       aria-hidden="true"
-      className={className}
+      className={isMobile ? "w-full h-28 md:h-40" : className}
     >
       <div
         data-testid="sculpture-rubik-cube"
@@ -1160,7 +1192,10 @@ export function RubiksCubeSculpture({
         className="w-full h-full"
       >
         <CanvasErrorBoundary>
-          <Canvas camera={{ position: [0, 0, 4.2], fov: 40 }}>
+          <Canvas
+            camera={{ position: [0, 0, 4.2], fov: 40 }}
+            dpr={isMobile ? [1, 1] : [1, 2]}
+          >
             <RubiksCubeMesh
               strokeColor={strokeColor}
               occlusionColor={occlusionColor}

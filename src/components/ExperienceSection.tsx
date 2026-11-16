@@ -58,19 +58,19 @@ export function ExperienceSection() {
     <section
       id="experience-section"
       data-testid="experience-section"
-      className="scroll-mt-24 max-w-7xl mx-auto px-4 sm:px-8 py-10"
+      className="scroll-mt-20 w-full max-w-7xl mx-auto px-4 sm:px-8 py-8 md:py-10 overflow-hidden"
     >
-      <div className={`grid lg:grid-cols-12 border ${studioFrame}`}>
+      <div className={`grid lg:grid-cols-12 border w-full ${studioFrame}`}>
         <div
           data-testid="skills-matrix-block"
-          className={`lg:col-span-5 p-6 border-b lg:border-b-0 lg:border-r space-y-5 ${gridBorder}`}
+          className={`lg:col-span-5 min-w-0 max-w-full overflow-hidden p-4 sm:p-6 border-b lg:border-b-0 lg:border-r space-y-5 ${gridBorder}`}
         >
-          <div className="space-y-4">
+          <div className="space-y-4 min-w-0">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
               {lang === "id" ? "Keahlian" : "Skills"}
             </h2>
 
-            <div className={`h-44 border mb-5 ${gridBorder}`}>
+            <div className={`h-28 md:h-44 border mb-5 overflow-hidden ${gridBorder}`}>
               <RubiksCubeSculpture className="w-full h-full" />
             </div>
 
@@ -81,7 +81,7 @@ export function ExperienceSection() {
                   ? "Filter kategori keahlian"
                   : "Skill category filter"
               }
-              className="flex flex-wrap gap-1.5"
+              className="flex flex-wrap gap-1.5 w-full max-w-full"
             >
               {skillCategories.map((cat) => {
                 const isActive = activeSkillTab === cat.id;
@@ -114,30 +114,28 @@ export function ExperienceSection() {
             </div>
           </div>
 
-          <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full">
             {filteredSkills.map((skill) => {
               const isAiCategory = skill.category === "ai-data";
               return (
                 <article
                   key={skill.id}
                   data-testid={`skill-card-${skill.id}`}
-                  className={`p-3 border transition-colors ${gridBorder}`}
+                  className={`flex flex-wrap items-center justify-between gap-2 p-3 min-w-0 max-w-full overflow-hidden border transition-colors ${gridBorder}`}
                 >
-                  <div className="flex items-center justify-between gap-2">
-                    <h3 className="text-sm font-bold tracking-tight leading-snug">
-                      {skill.name}
-                    </h3>
+                  <h3 className="text-sm font-bold tracking-tight leading-snug break-words min-w-0">
+                    {skill.name}
+                  </h3>
 
-                    <span
-                      className={`shrink-0 border px-2 py-0.5 font-mono text-[10px] font-semibold ${
-                        isAiCategory
-                          ? "border-[#FF5A36]/50 text-[#FF5A36]"
-                          : `${gridBorder} ${tokens.secondaryText}`
-                      }`}
-                    >
-                      {skill.levelBadge[lang]}
-                    </span>
-                  </div>
+                  <span
+                    className={`shrink-0 border px-2 py-0.5 font-mono text-[11px] font-semibold ${
+                      isAiCategory
+                        ? "border-[#FF5A36]/50 text-[#FF5A36]"
+                        : `${gridBorder} ${tokens.secondaryText}`
+                    }`}
+                  >
+                    {skill.levelBadge[lang]}
+                  </span>
                 </article>
               );
             })}
@@ -146,9 +144,9 @@ export function ExperienceSection() {
 
         <div
           data-testid="timeline-block"
-          className="lg:col-span-7 p-6 space-y-5"
+          className="lg:col-span-7 min-w-0 max-w-full overflow-hidden p-4 sm:p-6 space-y-5"
         >
-          <div className="space-y-3">
+          <div className="space-y-3 min-w-0">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
               {lang === "id"
                 ? "Pengalaman & Pendidikan"
@@ -162,7 +160,7 @@ export function ExperienceSection() {
                   ? "Filter kategori lini masa"
                   : "Timeline category filter"
               }
-              className="flex flex-wrap gap-1.5"
+              className="flex flex-wrap gap-1.5 w-full max-w-full"
             >
               {timelineCategories.map((cat) => {
                 const isActive = activeTimelineTab === cat.id;
@@ -175,7 +173,7 @@ export function ExperienceSection() {
                     data-testid={`timeline-tab-${cat.id}`}
                     aria-pressed={isActive}
                     onClick={() => setActiveTimelineTab(cat.id)}
-                    className={`inline-flex items-center gap-1.5 border px-3 py-1 text-xs font-semibold transition-all ${
+                    className={`inline-flex items-center gap-1.5 border px-2.5 py-1 text-xs font-semibold transition-all ${
                       isActive
                         ? "bg-[#2563EB] text-white border-[#2563EB]"
                         : `${gridBorder} ${tokens.textMuted} hover:border-[#2563EB]`
@@ -195,53 +193,53 @@ export function ExperienceSection() {
             </div>
           </div>
 
-          <div className="grid gap-3.5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 w-full">
             {filteredTimeline.map((item, idx) => (
               <article
                 key={item.id}
                 data-testid={`timeline-card-${item.id}`}
-                className={`p-4 border space-y-3 transition-colors ${gridBorder} ${
+                className={`min-w-0 max-w-full overflow-hidden p-4 border space-y-3 transition-colors ${gridBorder} ${
                   filteredTimeline.length === 5 && idx === 0
                     ? "sm:col-span-2"
                     : ""
                 }`}
               >
-                <div className="flex flex-wrap items-start justify-between gap-2">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-1 min-w-0">
                   <div className="space-y-1 min-w-0 flex-1">
-                    <h3 className="text-base font-bold tracking-tight">
+                    <h3 className="text-base font-bold tracking-tight break-words">
                       {item.roleOrDegree[lang]}
                     </h3>
 
                     <p
-                      className={`inline-flex items-center gap-1.5 text-xs font-medium ${tokens.textMuted}`}
+                      className={`inline-flex items-center gap-1.5 text-xs font-medium break-words min-w-0 ${tokens.textMuted}`}
                     >
                       <Building2
                         aria-hidden="true"
                         className={`h-3.5 w-3.5 shrink-0 ${tokens.secondaryText}`}
                       />
-                      <span>{item.organization}</span>
+                      <span className="break-words">{item.organization}</span>
                     </p>
                   </div>
 
                   <span
-                    className={`inline-flex shrink-0 items-center gap-1 border px-2.5 py-0.5 font-mono text-[11px] ${gridBorder} ${tokens.textMuted}`}
+                    className={`inline-flex w-fit shrink-0 items-center gap-1 border px-2.5 py-0.5 font-mono text-[11px] ${gridBorder} ${tokens.textMuted}`}
                   >
-                    <Calendar aria-hidden="true" className="h-3 w-3" />
+                    <Calendar aria-hidden="true" className="h-3 w-3 shrink-0" />
                     <span>{item.period[lang]}</span>
                   </span>
                 </div>
 
-                <ul role="list" className="space-y-1.5">
+                <ul role="list" className="space-y-1.5 min-w-0">
                   {item.highlights[lang].map((highlight, highlightIdx) => (
                     <li
                       key={highlightIdx}
-                      className="flex items-start gap-2 text-xs leading-relaxed"
+                      className="flex items-start gap-2 text-xs leading-relaxed min-w-0"
                     >
                       <CheckCircle2
                         aria-hidden="true"
                         className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${tokens.secondaryText}`}
                       />
-                      <span>{highlight}</span>
+                      <span className="break-words min-w-0">{highlight}</span>
                     </li>
                   ))}
                 </ul>

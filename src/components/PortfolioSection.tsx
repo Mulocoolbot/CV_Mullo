@@ -78,6 +78,9 @@ export function PortfolioSection() {
     event: MouseEvent<HTMLElement>,
     projectId: string
   ) => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      return;
+    }
     const rect = event.currentTarget.getBoundingClientRect();
     if (rect.width <= 0 || rect.height <= 0) {
       setTiltedCard({ id: projectId, rotateX: 0, rotateY: 0 });
@@ -131,11 +134,11 @@ export function PortfolioSection() {
     <section
       id="portfolio-section"
       data-testid="portfolio-section"
-      className="scroll-mt-24 max-w-7xl mx-auto px-4 sm:px-8 py-10"
+      className="scroll-mt-20 w-full max-w-7xl mx-auto px-4 sm:px-8 py-8 md:py-10 overflow-hidden"
     >
-      <div className={`grid lg:grid-cols-12 border mb-6 items-center ${studioFrame}`}>
+      <div className={`grid lg:grid-cols-12 border mb-6 items-center w-full ${studioFrame}`}>
         <div
-          className={`lg:col-span-8 p-6 border-b lg:border-b-0 lg:border-r space-y-4 ${gridBorder}`}
+          className={`lg:col-span-8 min-w-0 max-w-full overflow-hidden p-4 sm:p-6 border-b lg:border-b-0 lg:border-r space-y-4 ${gridBorder}`}
         >
           <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
             {lang === "id" ? "Portofolio" : "Portfolio"}
@@ -146,7 +149,7 @@ export function PortfolioSection() {
             aria-label={
               lang === "id" ? "Filter kategori proyek" : "Project category filter"
             }
-            className="flex flex-wrap items-center gap-2"
+            className="flex flex-wrap gap-1.5 w-full max-w-full items-center"
           >
             {projectCategories.map((cat) => {
               const isActive = activeCategory === cat.id;
@@ -159,7 +162,7 @@ export function PortfolioSection() {
                   data-testid={`filter-tab-${cat.id}`}
                   aria-pressed={isActive}
                   onClick={() => setActiveCategory(cat.id)}
-                  className={`inline-flex items-center gap-1.5 border px-3 py-1.5 text-xs font-semibold transition-all ${
+                  className={`inline-flex items-center gap-1.5 border px-2.5 py-1.5 text-xs font-semibold transition-all ${
                     isActive
                       ? "bg-[#2563EB] text-white border-[#2563EB]"
                       : `${gridBorder} ${tokens.textMuted} hover:border-[#2563EB]`
@@ -179,12 +182,12 @@ export function PortfolioSection() {
           </div>
         </div>
 
-        <div className="lg:col-span-4 h-44 relative flex items-center justify-center">
+        <div className="lg:col-span-4 min-w-0 max-w-full overflow-hidden h-28 md:h-44 relative flex items-center justify-center">
           <TrefoilKnotSculpture className="w-full h-full" />
         </div>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 w-full">
         {filteredProjects.map((project) => {
           const isTilted = tiltedCard?.id === project.id;
           const rotateX = isTilted ? tiltedCard.rotateX : 0;
@@ -200,7 +203,7 @@ export function PortfolioSection() {
               style={{
                 transform: `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
               }}
-              className={`flex flex-col overflow-hidden border transition-all duration-200 ease-out ${studioFrame}`}
+              className={`flex flex-col min-w-0 max-w-full overflow-hidden border transition-all duration-200 ease-out ${studioFrame}`}
             >
               <div className={`relative overflow-hidden border-b ${gridBorder}`}>
                 <img
@@ -219,14 +222,14 @@ export function PortfolioSection() {
                 </span>
               </div>
 
-              <div className="p-4 space-y-3 flex flex-1 flex-col justify-between">
-                <div className="space-y-2">
-                  <h3 className="text-base font-bold tracking-tight">
+              <div className="p-4 space-y-3 flex flex-1 flex-col justify-between min-w-0">
+                <div className="space-y-2 min-w-0">
+                  <h3 className="text-base font-bold tracking-tight break-words">
                     {project.title}
                   </h3>
 
                   <p
-                    className={`line-clamp-2 text-xs leading-relaxed ${tokens.textMuted}`}
+                    className={`line-clamp-2 text-xs leading-relaxed break-words ${tokens.textMuted}`}
                   >
                     {project.shortSummary[lang]}
                   </p>
@@ -293,10 +296,10 @@ export function PortfolioSection() {
           role="dialog"
           aria-modal="true"
           aria-labelledby="case-study-modal-title"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-sm sm:p-6"
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/75 p-2 backdrop-blur-sm sm:p-6"
         >
           <div
-            className={`max-h-[90vh] w-full max-w-3xl overflow-y-auto border p-6 sm:p-8 ${studioFrame} ${tokens.textPrimary}`}
+            className={`max-h-[90vh] w-full max-w-3xl overflow-y-auto border p-5 sm:p-8 ${studioFrame} ${tokens.textPrimary}`}
           >
             <div
               className={`flex items-start justify-between gap-4 border-b pb-5 ${gridBorder}`}

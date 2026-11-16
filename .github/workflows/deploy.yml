@@ -39,6 +39,7 @@ jobs:
       - name: Build static export for GitHub Pages
         env:
           NEXT_PUBLIC_BASE_PATH: "/CV_Mullo"
+          NEXT_PUBLIC_GMAIL_API_URL: "https://script.google.com/macros/s/AKfycbwRvh7ZkZ5XEhVB1VA_rG08x4NVayVkrsCUi5PMvggdC6j6GlR2LHh7afbi59NWKGA2/exec"
         run: npm run build
 
       - name: Configure GitHub Pages
