@@ -175,6 +175,18 @@
   }
 }
 
+@media (max-width: 767px), (hover: none), (pointer: coarse) {
+  [data-testid="custom-cursor"],
+  .custom-cursor {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+  html, body, * {
+    cursor: auto !important;
+  }
+}
+
 @media print {
   header[data-testid="top-navbar"],
   [data-testid="neural-globe-bg"],

@@ -16,14 +16,36 @@ function resolveTargetElement(target: EventTarget | null): Element | null {
   return null;
 }
 
+export const checkIsTouchOrMobile = () =>
+  typeof window !== "undefined" &&
+  (window.innerWidth < 768 ||
+    window.matchMedia("(pointer: coarse)").matches ||
+    window.matchMedia("(hover: none)").matches ||
+    navigator.maxTouchPoints > 0);
+
 export function CustomCursor() {
   const { theme } = usePreferences();
+  const [isTouchOrMobile, setIsTouchOrMobile] = useState<boolean>(() =>
+    checkIsTouchOrMobile()
+  );
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(true);
   const [isPressed, setIsPressed] = useState(false);
   const [isPointer, setIsPointer] = useState(false);
 
   useEffect(() => {
+    const syncDeviceType = () => {
+      setIsTouchOrMobile(checkIsTouchOrMobile());
+    };
+
+    syncDeviceType();
+    window.addEventListener("resize", syncDeviceType, { passive: true });
+    return () => window.removeEventListener("resize", syncDeviceType);
+  }, []);
+
+  useEffect(() => {
+    if (isTouchOrMobile || checkIsTouchOrMobile()) return;
+
     const syncPointerState = (target: EventTarget | null) => {
       const element = resolveTargetElement(target);
       setIsPointer(Boolean(element?.closest(INTERACTIVE_SELECTOR)));
@@ -65,7 +87,11 @@ export function CustomCursor() {
         handleMouseEnter
       );
     };
-  }, []);
+  }, [isTouchOrMobile]);
+
+  if (isTouchOrMobile) {
+    return null;
+  }
 
   const fillColor = theme === "light" ? "#111111" : "#FFFFFF";
   const strokeColor = theme === "light" ? "#000000" : "#111111";
@@ -77,7 +103,7 @@ export function CustomCursor() {
       data-cursor-theme={theme}
       data-cursor-mode={isPointer ? "pointer" : "default"}
       aria-hidden="true"
-      className="pointer-events-none fixed left-0 top-0 z-[9999] transition-opacity duration-150"
+      className="custom-cursor hidden md:block pointer-events-none fixed left-0 top-0 z-[9999] transition-opacity duration-150"
       style={{
         transform: `translate3d(${position.x}px, ${position.y}px, 0) scale(${
           isPressed ? 0.9 : 1

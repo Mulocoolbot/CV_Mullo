@@ -1,10 +1,15 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import HomePage from "@/app/page";
+import { CustomCursor } from "@/components/CustomCursor";
+import { MeridianGlobeBackground } from "@/components/WireframeSculptures3D";
 import { customBanner, primaryPackages, scopeNotes } from "@/data/servicesData";
+import { PreferencesProvider } from "@/hooks/usePreferences";
 
 vi.mock("@react-three/fiber", () => ({
-  Canvas: () => <div data-testid="r3f-canvas-mock" />,
+  Canvas: ({ children }: { children?: React.ReactNode }) => (
+    <div data-testid="r3f-canvas-mock">{children}</div>
+  ),
   useFrame: vi.fn(),
 }));
 
@@ -22,6 +27,30 @@ vi.mock("@react-three/drei", () => ({
 describe("Phase 12 Black Box Testing Suite", () => {
   beforeEach(() => {
     localStorage.clear();
+    Object.defineProperty(window, "innerWidth", {
+      writable: true,
+      configurable: true,
+      value: 1024,
+    });
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      configurable: true,
+      value: (query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: () => {},
+        removeListener: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        dispatchEvent: () => false,
+      }),
+    });
+    Object.defineProperty(navigator, "maxTouchPoints", {
+      writable: true,
+      configurable: true,
+      value: 0,
+    });
   });
 
   it("tc_p12_01_renders_all_3_primary_service_tiers_with_updated_prices_and_duration_estimates", () => {
@@ -241,5 +270,95 @@ describe("Phase 12 Black Box Testing Suite", () => {
     expect(screen.getByTestId("services-scope-footnote")).toHaveTextContent(
       scopeNotes.en
     );
+  });
+
+  it("tc_p12_06_custom_cursor_returns_null_on_mobile_375px_and_coarse_pointer", () => {
+    Object.defineProperty(window, "innerWidth", {
+      writable: true,
+      configurable: true,
+      value: 375,
+    });
+
+    const { unmount } = render(
+      <PreferencesProvider>
+        <CustomCursor />
+      </PreferencesProvider>
+    );
+    expect(screen.getByTestId("theme-container")).toBeEmptyDOMElement();
+    expect(screen.queryByTestId("custom-cursor")).toBeNull();
+    unmount();
+
+    Object.defineProperty(window, "innerWidth", {
+      writable: true,
+      configurable: true,
+      value: 1280,
+    });
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      configurable: true,
+      value: (query: string) => ({
+        matches: query === "(pointer: coarse)",
+        media: query,
+        onchange: null,
+        addListener: () => {},
+        removeListener: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        dispatchEvent: () => false,
+      }),
+    });
+
+    render(
+      <PreferencesProvider>
+        <CustomCursor />
+      </PreferencesProvider>
+    );
+    expect(screen.getByTestId("theme-container")).toBeEmptyDOMElement();
+    expect(screen.queryByTestId("custom-cursor")).toBeNull();
+  });
+
+  it("tc_p12_07_meridian_globe_applies_mobile_scale_and_container_constraints_below_768px", () => {
+    Object.defineProperty(window, "innerWidth", {
+      writable: true,
+      configurable: true,
+      value: 375,
+    });
+
+    render(
+      <PreferencesProvider>
+        <MeridianGlobeBackground />
+      </PreferencesProvider>
+    );
+
+    const globeBg = screen.getByTestId("neural-globe-bg");
+    const meridiansContainer = screen.getByTestId("y2k-globe-meridians");
+    const globeGroup = screen.getByTestId("meridian-globe-group");
+
+    expect(globeBg).toHaveAttribute("data-mobile-optimized", "true");
+    expect(globeBg).toHaveAttribute("data-camera-z", "7.2");
+    expect(globeBg).toHaveAttribute("data-globe-scale", "0.52");
+    expect(globeBg).toHaveClass(
+      "opacity-25",
+      "md:opacity-55",
+      "w-[260px]",
+      "h-[260px]",
+      "sm:w-[340px]",
+      "sm:h-[340px]",
+      "md:w-full",
+      "md:h-full",
+      "mx-auto",
+      "my-auto"
+    );
+    expect(meridiansContainer).toHaveClass(
+      "w-[260px]",
+      "h-[260px]",
+      "sm:w-[340px]",
+      "sm:h-[340px]",
+      "md:w-full",
+      "md:h-full",
+      "mx-auto",
+      "my-auto"
+    );
+    expect(globeGroup).toHaveAttribute("data-globe-scale", "0.52");
   });
 });

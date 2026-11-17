@@ -29,6 +29,25 @@ describe("Phase 11 Black Box Testing Suite", () => {
       configurable: true,
       value: 1024,
     });
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      configurable: true,
+      value: (query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: () => {},
+        removeListener: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        dispatchEvent: () => false,
+      }),
+    });
+    Object.defineProperty(navigator, "maxTouchPoints", {
+      writable: true,
+      configurable: true,
+      value: 0,
+    });
   });
 
   afterEach(() => {
@@ -156,5 +175,132 @@ describe("Phase 11 Black Box Testing Suite", () => {
     const status = screen.getByTestId("email-dispatch-status");
     expect(status).toBeVisible();
     expect(status.textContent?.length).toBeGreaterThan(0);
+  });
+
+  it("tc_p11_06_unmounts_custom_cursor_and_skips_mouse_listeners_on_mobile_and_touch_devices", () => {
+    const addListenerSpy = vi.spyOn(window, "addEventListener");
+
+    Object.defineProperty(window, "innerWidth", {
+      writable: true,
+      configurable: true,
+      value: 375,
+    });
+
+    const { unmount } = render(<HomePage />);
+    expect(screen.queryByTestId("custom-cursor")).toBeNull();
+    expect(
+      addListenerSpy.mock.calls.some(([event]) => event === "mousemove")
+    ).toBe(false);
+    unmount();
+
+    addListenerSpy.mockClear();
+    Object.defineProperty(window, "innerWidth", {
+      writable: true,
+      configurable: true,
+      value: 1280,
+    });
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      configurable: true,
+      value: (query: string) => ({
+        matches: query === "(pointer: coarse)" || query === "(hover: none)",
+        media: query,
+        onchange: null,
+        addListener: () => {},
+        removeListener: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        dispatchEvent: () => false,
+      }),
+    });
+
+    const { unmount: unmountTouch } = render(<HomePage />);
+    expect(screen.queryByTestId("custom-cursor")).toBeNull();
+    unmountTouch();
+
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      configurable: true,
+      value: (query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: () => {},
+        removeListener: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        dispatchEvent: () => false,
+      }),
+    });
+    Object.defineProperty(navigator, "maxTouchPoints", {
+      writable: true,
+      configurable: true,
+      value: 5,
+    });
+
+    const { unmount: unmountMaxTouch } = render(<HomePage />);
+    expect(screen.queryByTestId("custom-cursor")).toBeNull();
+    unmountMaxTouch();
+
+    Object.defineProperty(navigator, "maxTouchPoints", {
+      writable: true,
+      configurable: true,
+      value: 0,
+    });
+    render(<HomePage />);
+    const cursor = screen.getByTestId("custom-cursor");
+    expect(cursor).toBeInTheDocument();
+    expect(cursor).toHaveClass("hidden", "md:block", "pointer-events-none");
+  });
+
+  it("tc_p11_07_scales_down_meridian_globe_background_and_container_on_mobile_viewports", () => {
+    Object.defineProperty(window, "innerWidth", {
+      writable: true,
+      configurable: true,
+      value: 375,
+    });
+
+    render(<HomePage />);
+
+    const globeBg = screen.getByTestId("neural-globe-bg");
+    const meridiansContainer = screen.getByTestId("y2k-globe-meridians");
+    const globeGroup = screen.getByTestId("meridian-globe-group");
+
+    expect(globeBg).toHaveAttribute("data-mobile-optimized", "true");
+    expect(globeBg).toHaveAttribute("data-camera-z", "7.2");
+    expect(globeBg).toHaveAttribute("data-globe-scale", "0.52");
+    expect(globeBg).toHaveClass(
+      "opacity-25",
+      "md:opacity-55",
+      "w-[260px]",
+      "h-[260px]",
+      "sm:w-[340px]",
+      "sm:h-[340px]",
+      "md:w-full",
+      "md:h-full",
+      "mx-auto",
+      "my-auto"
+    );
+    expect(meridiansContainer).toHaveClass(
+      "w-[260px]",
+      "h-[260px]",
+      "sm:w-[340px]",
+      "sm:h-[340px]",
+      "md:w-full",
+      "md:h-full",
+      "mx-auto",
+      "my-auto"
+    );
+    expect(globeGroup).toHaveAttribute("data-globe-scale", "0.52");
+
+    act(() => {
+      window.innerWidth = 1280;
+      window.dispatchEvent(new Event("resize"));
+    });
+
+    expect(globeBg).toHaveAttribute("data-mobile-optimized", "false");
+    expect(globeBg).toHaveAttribute("data-camera-z", "4.5");
+    expect(globeBg).toHaveAttribute("data-globe-scale", "1");
+    expect(globeGroup).toHaveAttribute("data-globe-scale", "1");
   });
 });

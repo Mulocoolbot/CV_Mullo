@@ -143,18 +143,40 @@ function buildMeridianGridPositions() {
 
 const meridianGridPositions = buildMeridianGridPositions();
 
-function MeridianGlobeMesh({ theme }: { theme: ThemeMode }) {
+function MeridianGlobeMesh({
+  theme,
+  isMobile = false,
+}: {
+  theme: ThemeMode;
+  isMobile?: boolean;
+}) {
+  const outerGroupRef = useRef<Group>(null);
   const groupRef = useRef<Group>(null);
   const isDark = theme === "dark";
+  const mobileScale = 0.52;
+  const baseScale = isMobile ? mobileScale : 1;
 
-  useFrame((_, delta) => {
-    if (!groupRef.current) return;
-    groupRef.current.rotation.y =
-      (groupRef.current.rotation.y + delta * 0.18) % (Math.PI * 2);
+  useFrame((state, delta) => {
+    if (groupRef.current) {
+      groupRef.current.rotation.y =
+        (groupRef.current.rotation.y + delta * 0.18) % (Math.PI * 2);
+    }
+    if (outerGroupRef.current && state?.viewport?.width) {
+      const clamped = Math.min(1, state.viewport.width / 5.5);
+      outerGroupRef.current.scale.setScalar(
+        isMobile ? Math.min(mobileScale, clamped) : clamped,
+      );
+    }
   });
 
   return (
-    <group rotation={[0.52, 0, -0.35]}>
+    <group
+      ref={outerGroupRef}
+      scale={baseScale}
+      rotation={[0.52, 0, -0.35]}
+      data-testid="meridian-globe-group"
+      data-globe-scale={baseScale}
+    >
       <group ref={groupRef}>
         <mesh>
           <sphereGeometry args={[GLOBE_OCCLUSION_RADIUS, 48, 48]} />
@@ -186,7 +208,10 @@ function MeridianGlobeMesh({ theme }: { theme: ThemeMode }) {
 
 export function MeridianGlobeBackground() {
   const { theme } = usePreferences();
-  const { isMobile } = useMobileDevice();
+  const { isMobile: isMobileViewport } = useMobileDevice();
+  const isMobile =
+    isMobileViewport ||
+    (typeof window !== "undefined" && window.innerWidth < 768);
 
   return (
     <div
@@ -194,16 +219,21 @@ export function MeridianGlobeBackground() {
       data-theme-mode={theme}
       data-globe-style="y2k-meridian"
       data-mobile-optimized={isMobile ? "true" : "false"}
+      data-camera-z={isMobile ? "7.2" : "4.5"}
+      data-globe-scale={isMobile ? "0.52" : "1"}
       aria-hidden="true"
-      className="fixed inset-0 pointer-events-none z-0 overflow-hidden"
+      className="fixed inset-0 pointer-events-none z-0 overflow-hidden flex items-center justify-center opacity-25 md:opacity-55 w-[260px] h-[260px] sm:w-[340px] sm:h-[340px] md:w-full md:h-full mx-auto my-auto"
     >
-      <div data-testid="y2k-globe-meridians" className="h-full w-full">
+      <div
+        data-testid="y2k-globe-meridians"
+        className="w-[260px] h-[260px] sm:w-[340px] sm:h-[340px] md:w-full md:h-full mx-auto my-auto"
+      >
         <CanvasErrorBoundary>
           <Canvas
-            camera={{ position: [0, 0, 5.8], fov: 45 }}
+            camera={{ position: [0, 0, isMobile ? 7.2 : 4.5], fov: 42 }}
             dpr={isMobile ? [1, 1] : [1, 1.5]}
           >
-            <MeridianGlobeMesh theme={theme} />
+            <MeridianGlobeMesh theme={theme} isMobile={isMobile} />
           </Canvas>
         </CanvasErrorBoundary>
       </div>
@@ -466,6 +496,8 @@ export function OpticalVortexSculpture() {
   const isDark = theme === "dark";
 
   useEffect(() => {
+    if (isMobile) return;
+
     const onMove = (e: MouseEvent) => {
       const nx = (e.clientX / Math.max(1, window.innerWidth)) * 2 - 1;
       const ny = (e.clientY / Math.max(1, window.innerHeight)) * 2 - 1;
@@ -474,6 +506,11 @@ export function OpticalVortexSculpture() {
     window.addEventListener("mousemove", onMove, { passive: true });
     return () => {
       window.removeEventListener("mousemove", onMove);
+    };
+  }, [isMobile]);
+
+  useEffect(() => {
+    return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, []);
