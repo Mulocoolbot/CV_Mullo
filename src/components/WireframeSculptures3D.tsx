@@ -23,8 +23,8 @@ import { useMobileDevice } from "@/hooks/useMobileDevice";
 import { usePreferences } from "@/hooks/usePreferences";
 import type { ThemeMode } from "@/types/cv";
 
-const GLOBE_RADIUS = 2.65;
-const GLOBE_OCCLUSION_RADIUS = 2.63;
+const GLOBE_RADIUS = 1.37;
+const GLOBE_OCCLUSION_RADIUS = 1.35;
 const LATITUDE_RINGS = 18;
 const LONGITUDE_MERIDIANS = 24;
 const GLOBE_RING_SEGMENTS = 72;
@@ -146,42 +146,30 @@ const meridianGridPositions = buildMeridianGridPositions();
 function MeridianGlobeMesh({
   theme,
   isMobile = false,
+  scale,
 }: {
   theme: ThemeMode;
   isMobile?: boolean;
+  scale: number;
 }) {
   const outerGroupRef = useRef<Group>(null);
   const groupRef = useRef<Group>(null);
   const isDark = theme === "dark";
-  const mobileScale = 0.52;
-  const baseScale = isMobile ? mobileScale : 1;
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     if (groupRef.current) {
       groupRef.current.rotation.y =
         (groupRef.current.rotation.y + delta * 0.18) % (Math.PI * 2);
     }
-    if (outerGroupRef.current && state?.viewport?.width) {
-      const clamped = Math.min(1, state.viewport.width / 5.5);
-      outerGroupRef.current.scale.setScalar(
-        isMobile ? Math.min(mobileScale, clamped) : clamped,
-      );
-    }
   });
 
   return (
-    <group
-      ref={outerGroupRef}
-      scale={baseScale}
-      rotation={[0.52, 0, -0.35]}
-      data-testid="meridian-globe-group"
-      data-globe-scale={baseScale}
-    >
+    <group ref={outerGroupRef} scale={scale} rotation={[0.52, 0, -0.35]}>
       <group ref={groupRef}>
         <mesh>
           <sphereGeometry args={[GLOBE_OCCLUSION_RADIUS, 48, 48]} />
           <meshBasicMaterial
-            color={isDark ? "#0A0A0C" : "#F7F6F2"}
+            color={isDark ? "#0B0D12" : "#FAF8F5"}
             polygonOffset
             polygonOffsetFactor={1}
             polygonOffsetUnits={1}
@@ -196,9 +184,9 @@ function MeridianGlobeMesh({
             />
           </bufferGeometry>
           <lineBasicMaterial
-            color={isDark ? "#F4F4F6" : "#111111"}
-            transparent
-            opacity={isDark ? 0.22 : 0.16}
+            color={isDark ? "#E2E8F0" : "#111111"}
+            transparent={true}
+            opacity={isMobile ? 0.22 : 0.28}
           />
         </lineSegments>
       </group>
@@ -208,34 +196,64 @@ function MeridianGlobeMesh({
 
 export function MeridianGlobeBackground() {
   const { theme } = usePreferences();
-  const { isMobile: isMobileViewport } = useMobileDevice();
-  const isMobile =
-    isMobileViewport ||
-    (typeof window !== "undefined" && window.innerWidth < 768);
+  const { isMobile: isMobileDevice } = useMobileDevice();
+  const [isNarrowViewport, setIsNarrowViewport] = useState(
+    () => typeof window !== "undefined" && window.innerWidth < 768,
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsNarrowViewport(window.innerWidth < 768);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize, { passive: true });
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const isMobile = isMobileDevice || isNarrowViewport;
+  const globeScale = isMobile ? 0.72 : 1.35;
 
   return (
     <div
-      data-testid="neural-globe-bg"
+      data-testid="meridian-globe-bg"
       data-theme-mode={theme}
       data-globe-style="y2k-meridian"
       data-mobile-optimized={isMobile ? "true" : "false"}
-      data-camera-z={isMobile ? "7.2" : "4.5"}
-      data-globe-scale={isMobile ? "0.52" : "1"}
+      data-camera-z="5.2"
+      data-globe-scale={globeScale}
       aria-hidden="true"
-      className="fixed inset-0 pointer-events-none z-0 overflow-hidden flex items-center justify-center opacity-25 md:opacity-55 w-[260px] h-[260px] sm:w-[340px] sm:h-[340px] md:w-full md:h-full mx-auto my-auto"
+      className="fixed inset-0 w-screen h-screen pointer-events-none z-0 overflow-hidden"
+      style={{ width: "100vw", height: "100vh" }}
     >
       <div
-        data-testid="y2k-globe-meridians"
-        className="w-[260px] h-[260px] sm:w-[340px] sm:h-[340px] md:w-full md:h-full mx-auto my-auto"
+        data-testid="neural-globe-bg"
+        data-theme-mode={theme}
+        data-globe-style="y2k-meridian"
+        data-mobile-optimized={isMobile ? "true" : "false"}
+        data-camera-z="5.2"
+        data-globe-scale={globeScale}
+        className="w-full h-full"
+        style={{ width: "100%", height: "100%" }}
       >
-        <CanvasErrorBoundary>
-          <Canvas
-            camera={{ position: [0, 0, isMobile ? 7.2 : 4.5], fov: 42 }}
-            dpr={isMobile ? [1, 1] : [1, 1.5]}
-          >
-            <MeridianGlobeMesh theme={theme} isMobile={isMobile} />
-          </Canvas>
-        </CanvasErrorBoundary>
+        <div
+          data-testid="y2k-globe-meridians"
+          className="w-full h-full"
+          style={{ width: "100%", height: "100%" }}
+        >
+          <CanvasErrorBoundary>
+            <Canvas
+              style={{ width: "100%", height: "100%" }}
+              camera={{ position: [0, 0, 5.2], fov: 45 }}
+              dpr={isMobile ? [1, 1] : [1, 1.5]}
+            >
+              <MeridianGlobeMesh
+                theme={theme}
+                isMobile={isMobile}
+                scale={globeScale}
+              />
+            </Canvas>
+          </CanvasErrorBoundary>
+        </div>
       </div>
     </div>
   );
@@ -445,7 +463,7 @@ function OpticalVortexMesh({
 
   return (
     <group ref={groupRef} scale={0.92}>
-      <mesh data-testid="face-occlusion-mesh" position={[0, 0, -0.25]}>
+      <mesh position={[0, 0, -0.25]}>
         <circleGeometry args={[0.38, 32]} />
         <meshBasicMaterial color={coreSurfaceColor} side={DoubleSide} />
       </mesh>
@@ -477,11 +495,6 @@ function OpticalVortexMesh({
           opacity={0.98}
         />
       </lineSegments>
-
-      <group data-testid="face-eyebrow-group" />
-      <group data-testid="face-mouth-group" />
-      <group data-testid="face-eyeball-left" />
-      <group data-testid="face-eyeball-right" />
     </group>
   );
 }

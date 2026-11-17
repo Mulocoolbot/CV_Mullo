@@ -35,19 +35,9 @@ describe("Phase 8 Black Box Testing Suite", () => {
     const vortexTrigger = screen.getByTestId("vortex-sculpture-trigger");
     const faceTrigger = screen.getByTestId("neural-face-trigger");
     expect(vortexTrigger).toContainElement(faceTrigger);
-    expect(faceTrigger).toContainElement(
-      screen.getByTestId("face-occlusion-mesh")
-    );
-    expect(faceTrigger).toContainElement(
-      screen.getByTestId("face-eyeball-left")
-    );
-    expect(faceTrigger).toContainElement(
-      screen.getByTestId("face-eyeball-right")
-    );
-    expect(faceTrigger).toContainElement(
-      screen.getByTestId("face-eyebrow-group")
-    );
-    expect(faceTrigger).toContainElement(screen.getByTestId("face-mouth-group"));
+    const canvas = faceTrigger.querySelector('[data-testid="r3f-canvas-mock"]');
+    expect(canvas).toBeInTheDocument();
+    expect(canvas?.querySelectorAll("[data-testid]").length).toBe(0);
   });
 
   it("tc_p8_02_clicking_topological_face_triggers_surprised_mouth_and_brow_state_and_resets", () => {

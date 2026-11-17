@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @layer base, theme, components, utilities;
 
 @layer theme {
@@ -189,6 +191,7 @@
 
 @media print {
   header[data-testid="top-navbar"],
+  [data-testid="meridian-globe-bg"],
   [data-testid="neural-globe-bg"],
   [data-testid="custom-cursor"],
   [data-testid="cv-pending-banner"] {

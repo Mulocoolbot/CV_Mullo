@@ -10,13 +10,13 @@ import { PreferencesProvider } from "@/hooks/usePreferences";
 export default function HomePage() {
   return (
     <PreferencesProvider>
-      <div className="w-full max-w-full overflow-x-hidden">
+      <div className="bg-[#FAF8F5] dark:bg-[#0B0D12] relative min-h-screen w-full max-w-full overflow-x-hidden">
         <CustomCursor />
         <MeridianGlobeBackground />
         <TopNavbar />
         <main
           id="main-content"
-          className="relative z-10 w-full max-w-full overflow-x-hidden"
+          className="relative z-10 bg-transparent w-full max-w-full overflow-x-hidden"
         >
           <HeroSection />
           <PortfolioSection />

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import HomePage from "@/app/page";
 import { CustomCursor } from "@/components/CustomCursor";
@@ -39,10 +39,10 @@ describe("Phase 12 Black Box Testing Suite", () => {
         matches: false,
         media: query,
         onchange: null,
-        addListener: () => {},
-        removeListener: () => {},
-        addEventListener: () => {},
-        removeEventListener: () => {},
+        addListener: () => { },
+        removeListener: () => { },
+        addEventListener: () => { },
+        removeEventListener: () => { },
         dispatchEvent: () => false,
       }),
     });
@@ -300,10 +300,10 @@ describe("Phase 12 Black Box Testing Suite", () => {
         matches: query === "(pointer: coarse)",
         media: query,
         onchange: null,
-        addListener: () => {},
-        removeListener: () => {},
-        addEventListener: () => {},
-        removeEventListener: () => {},
+        addListener: () => { },
+        removeListener: () => { },
+        addEventListener: () => { },
+        removeEventListener: () => { },
         dispatchEvent: () => false,
       }),
     });
@@ -330,35 +330,41 @@ describe("Phase 12 Black Box Testing Suite", () => {
       </PreferencesProvider>
     );
 
+    const outerGlobeBg = screen.getByTestId("meridian-globe-bg");
     const globeBg = screen.getByTestId("neural-globe-bg");
     const meridiansContainer = screen.getByTestId("y2k-globe-meridians");
-    const globeGroup = screen.getByTestId("meridian-globe-group");
+    const canvas = outerGlobeBg.querySelector('[data-testid="r3f-canvas-mock"]');
 
+    expect(outerGlobeBg).toBeInTheDocument();
+    expect(outerGlobeBg).toHaveClass(
+      "fixed",
+      "inset-0",
+      "w-screen",
+      "h-screen",
+      "pointer-events-none",
+      "z-0",
+      "overflow-hidden"
+    );
+    expect(outerGlobeBg.style.width).toBe("100vw");
+    expect(outerGlobeBg.style.height).toBe("100vh");
+    expect(outerGlobeBg).not.toHaveClass("opacity-25");
+    expect(outerGlobeBg).not.toHaveClass("w-[260px]");
+    expect(outerGlobeBg).not.toHaveClass("h-[260px]");
+    expect(outerGlobeBg).not.toHaveClass("sm:w-[340px]");
+    expect(outerGlobeBg).not.toHaveClass("sm:h-[340px]");
+    expect(outerGlobeBg).toHaveAttribute("data-globe-scale", "0.72");
     expect(globeBg).toHaveAttribute("data-mobile-optimized", "true");
-    expect(globeBg).toHaveAttribute("data-camera-z", "7.2");
-    expect(globeBg).toHaveAttribute("data-globe-scale", "0.52");
-    expect(globeBg).toHaveClass(
-      "opacity-25",
-      "md:opacity-55",
-      "w-[260px]",
-      "h-[260px]",
-      "sm:w-[340px]",
-      "sm:h-[340px]",
-      "md:w-full",
-      "md:h-full",
-      "mx-auto",
-      "my-auto"
-    );
-    expect(meridiansContainer).toHaveClass(
-      "w-[260px]",
-      "h-[260px]",
-      "sm:w-[340px]",
-      "sm:h-[340px]",
-      "md:w-full",
-      "md:h-full",
-      "mx-auto",
-      "my-auto"
-    );
-    expect(globeGroup).toHaveAttribute("data-globe-scale", "0.52");
+    expect(globeBg).toHaveAttribute("data-camera-z", "5.2");
+    expect(globeBg).toHaveAttribute("data-globe-scale", "0.72");
+    expect(meridiansContainer).toHaveClass("w-full", "h-full");
+    expect(canvas).toBeInTheDocument();
+    expect(canvas?.querySelectorAll("[data-testid], [data-globe-scale]").length).toBe(0);
+
+    act(() => {
+      window.innerWidth = 1280;
+      window.dispatchEvent(new Event("resize"));
+    });
+
+    expect(outerGlobeBg).toHaveAttribute("data-globe-scale", "1.35");
   });
 });

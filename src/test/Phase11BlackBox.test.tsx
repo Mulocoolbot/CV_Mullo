@@ -262,45 +262,41 @@ describe("Phase 11 Black Box Testing Suite", () => {
 
     render(<HomePage />);
 
+    const outerGlobeBg = screen.getByTestId("meridian-globe-bg");
     const globeBg = screen.getByTestId("neural-globe-bg");
     const meridiansContainer = screen.getByTestId("y2k-globe-meridians");
-    const globeGroup = screen.getByTestId("meridian-globe-group");
+    const canvas = outerGlobeBg.querySelector('[data-testid="r3f-canvas-mock"]');
 
+    expect(outerGlobeBg).toHaveClass(
+      "fixed",
+      "inset-0",
+      "w-screen",
+      "h-screen",
+      "pointer-events-none",
+      "z-0",
+      "overflow-hidden"
+    );
+    expect(outerGlobeBg.style.width).toBe("100vw");
+    expect(outerGlobeBg.style.height).toBe("100vh");
+    expect(outerGlobeBg).not.toHaveClass("opacity-25", "w-[260px]");
+    expect(outerGlobeBg).toHaveAttribute("data-globe-scale", "0.72");
     expect(globeBg).toHaveAttribute("data-mobile-optimized", "true");
-    expect(globeBg).toHaveAttribute("data-camera-z", "7.2");
-    expect(globeBg).toHaveAttribute("data-globe-scale", "0.52");
-    expect(globeBg).toHaveClass(
-      "opacity-25",
-      "md:opacity-55",
-      "w-[260px]",
-      "h-[260px]",
-      "sm:w-[340px]",
-      "sm:h-[340px]",
-      "md:w-full",
-      "md:h-full",
-      "mx-auto",
-      "my-auto"
-    );
-    expect(meridiansContainer).toHaveClass(
-      "w-[260px]",
-      "h-[260px]",
-      "sm:w-[340px]",
-      "sm:h-[340px]",
-      "md:w-full",
-      "md:h-full",
-      "mx-auto",
-      "my-auto"
-    );
-    expect(globeGroup).toHaveAttribute("data-globe-scale", "0.52");
+    expect(globeBg).toHaveAttribute("data-camera-z", "5.2");
+    expect(globeBg).toHaveAttribute("data-globe-scale", "0.72");
+    expect(meridiansContainer).toHaveClass("w-full", "h-full");
+    expect(canvas).toBeInTheDocument();
+    expect(canvas?.querySelectorAll("[data-testid], [data-globe-scale]").length).toBe(0);
 
     act(() => {
       window.innerWidth = 1280;
       window.dispatchEvent(new Event("resize"));
     });
 
+    expect(outerGlobeBg).toHaveAttribute("data-mobile-optimized", "false");
+    expect(outerGlobeBg).toHaveAttribute("data-camera-z", "5.2");
+    expect(outerGlobeBg).toHaveAttribute("data-globe-scale", "1.35");
     expect(globeBg).toHaveAttribute("data-mobile-optimized", "false");
-    expect(globeBg).toHaveAttribute("data-camera-z", "4.5");
-    expect(globeBg).toHaveAttribute("data-globe-scale", "1");
-    expect(globeGroup).toHaveAttribute("data-globe-scale", "1");
+    expect(globeBg).toHaveAttribute("data-camera-z", "5.2");
+    expect(globeBg).toHaveAttribute("data-globe-scale", "1.35");
   });
 });
