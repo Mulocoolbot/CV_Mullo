@@ -195,6 +195,7 @@ export const customBanner: CustomConsultationBanner = {
     id: "Punya ide sistem khusus, butuh riset AI/Python, atau masih bingung menentukan paket yang pas? Diskusikan kebutuhanmu secara gratis.",
     en: "Have a custom system idea, need AI/Python R&D, or unsure which package fits best? Let's discuss your requirements for free.",
   },
+  referenceProject: "Fact Check & Milo.AI",
   whatsappMessage: {
     id: "Halo Ahmad, saya ingin berdiskusi mengenai kolaborasi Part-Time / R&D AI atau konsultasi kebutuhan sistem khusus.",
     en: "Hi Ahmad, I would like to discuss a Part-Time / AI R&D collaboration or custom system consultation.",
