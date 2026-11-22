@@ -34,6 +34,7 @@ export type ProjectCategory = "all" | "mobile" | "web" | "systems" | "ai-data";
 export interface ProjectItem {
   id: string;
   title: string;
+  localizedTitle?: LocalizedText;
   category: Exclude<ProjectCategory, "all">;
   categoryLabel: LocalizedText;
   role: LocalizedText;
@@ -49,6 +50,7 @@ export interface ProjectItem {
   techStack: string[];
   githubUrl: string;
   releaseUrl?: string;
+  liveDemoUrl?: string;
   screenshots: string[];
   screenshotCaptions: {
     id: string[];

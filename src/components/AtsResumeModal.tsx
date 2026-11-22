@@ -193,7 +193,11 @@ export function AtsResumeModal({ isOpen, onClose }: AtsResumeModalProps) {
               {projectsData.map((project) => (
                 <div key={project.id} className="space-y-0.5">
                   <div className="flex flex-wrap items-baseline justify-between gap-2 text-xs">
-                    <p className="font-bold text-zinc-900">{project.title}</p>
+                    <p className="font-bold text-zinc-900">
+                      {project.localizedTitle
+                        ? project.localizedTitle[lang]
+                        : project.title}
+                    </p>
                     <p className="font-mono text-[11px] text-zinc-600">
                       {project.techStack.join(", ")}
                     </p>

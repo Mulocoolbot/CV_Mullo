@@ -8,6 +8,7 @@ import {
   Code2,
   ExternalLink,
   FolderGit2,
+  Globe,
   Maximize2,
   Sparkles,
   X,
@@ -130,6 +131,9 @@ export function PortfolioSection() {
     return projectsData.filter((item) => item.category === category).length;
   };
 
+  const getProjectTitle = (project: ProjectItem) =>
+    project.localizedTitle ? project.localizedTitle[lang] : project.title;
+
   return (
     <section
       id="portfolio-section"
@@ -208,7 +212,7 @@ export function PortfolioSection() {
               <div className={`relative overflow-hidden border-b ${gridBorder}`}>
                 <img
                   src={getAssetPath(project.screenshots[0])}
-                  alt={project.title}
+                  alt={getProjectTitle(project)}
                   data-testid={`project-thumb-${project.id}`}
                   className="h-40 w-full object-cover object-top"
                 />
@@ -225,7 +229,7 @@ export function PortfolioSection() {
               <div className="p-4 space-y-3 flex flex-1 flex-col justify-between min-w-0">
                 <div className="space-y-2 min-w-0">
                   <h3 className="text-base font-bold tracking-tight break-words">
-                    {project.title}
+                    {getProjectTitle(project)}
                   </h3>
 
                   <p
@@ -283,6 +287,20 @@ export function PortfolioSection() {
                       <ExternalLink aria-hidden="true" className="h-3 w-3" />
                     </a>
                   )}
+
+                  {project.liveDemoUrl && (
+                    <a
+                      href={project.liveDemoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      data-testid={`link-demo-${project.id}`}
+                      className={`inline-flex items-center gap-1 px-2.5 py-1.5 font-mono text-xs font-bold transition-all duration-150 hover:opacity-90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563EB] ${tokens.tertiaryBg}`}
+                    >
+                      <Globe aria-hidden="true" className="h-3 w-3" />
+                      <span>Live Demo</span>
+                      <ExternalLink aria-hidden="true" className="h-3 w-3" />
+                    </a>
+                  )}
                 </div>
               </div>
             </article>
@@ -322,7 +340,7 @@ export function PortfolioSection() {
                   id="case-study-modal-title"
                   className="text-2xl font-bold tracking-tight sm:text-3xl"
                 >
-                  {selectedProject.title}
+                  {getProjectTitle(selectedProject)}
                 </h3>
 
                 <p className={`font-mono text-xs font-semibold ${tokens.secondaryText}`}>
@@ -354,7 +372,7 @@ export function PortfolioSection() {
                       )}
                       alt={
                         selectedProject.screenshotCaptions[lang][activeSlideIndex] ??
-                        selectedProject.title
+                        getProjectTitle(selectedProject)
                       }
                       data-testid="modal-active-screenshot"
                       className="h-64 w-full object-contain sm:h-80"
@@ -417,7 +435,7 @@ export function PortfolioSection() {
                           data-testid={`btn-thumb-${idx}`}
                           aria-label={
                             selectedProject.screenshotCaptions[lang][idx] ??
-                            `${selectedProject.title} ${idx + 1}`
+                            `${getProjectTitle(selectedProject)} ${idx + 1}`
                           }
                           aria-pressed={isCurrent}
                           onClick={() => setActiveSlideIndex(idx)}
@@ -431,7 +449,7 @@ export function PortfolioSection() {
                             src={getAssetPath(shot)}
                             alt={
                               selectedProject.screenshotCaptions[lang][idx] ??
-                              selectedProject.title
+                              getProjectTitle(selectedProject)
                             }
                             className="h-full w-full object-cover object-top"
                           />
@@ -477,18 +495,40 @@ export function PortfolioSection() {
                   {lang === "id" ? "Fitur Utama" : "Key Engineered Features"}
                 </h4>
                 <ul role="list" className="grid gap-2.5 sm:grid-cols-2">
-                  {selectedProject.keyFeatures[lang].map((feature, index) => (
-                    <li
-                      key={index}
-                      className={`flex items-start gap-2.5 border p-3 text-sm ${gridBorder}`}
-                    >
-                      <CheckCircle2
-                        aria-hidden="true"
-                        className={`mt-0.5 h-4 w-4 shrink-0 ${tokens.secondaryText}`}
-                      />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
+                  {selectedProject.keyFeatures[lang].map((feature, index) => {
+                    const separatorIndex = feature.indexOf(": ");
+                    const hasHeading = separatorIndex > 0;
+                    const heading = hasHeading
+                      ? feature.slice(0, separatorIndex)
+                      : "";
+                    const detail = hasHeading
+                      ? feature.slice(separatorIndex + 2)
+                      : feature;
+
+                    return (
+                      <li
+                        key={index}
+                        className={`flex items-start gap-2.5 border p-3 text-sm ${gridBorder}`}
+                      >
+                        <CheckCircle2
+                          aria-hidden="true"
+                          className={`mt-0.5 h-4 w-4 shrink-0 ${tokens.secondaryText}`}
+                        />
+                        <span>
+                          {hasHeading ? (
+                            <>
+                              <strong className="font-semibold">
+                                {heading}:
+                              </strong>{" "}
+                              {detail}
+                            </>
+                          ) : (
+                            feature
+                          )}
+                        </span>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
 
@@ -538,6 +578,20 @@ export function PortfolioSection() {
                     <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" />
                   </a>
                 )}
+
+                {selectedProject.liveDemoUrl && (
+                  <a
+                    href={selectedProject.liveDemoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    data-testid={`modal-link-demo-${selectedProject.id}`}
+                    className={`inline-flex items-center gap-2 px-4 py-2.5 font-mono text-xs font-bold transition-all duration-150 hover:opacity-90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2563EB] ${tokens.tertiaryBg}`}
+                  >
+                    <Globe aria-hidden="true" className="h-4 w-4" />
+                    <span>Live Demo</span>
+                    <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" />
+                  </a>
+                )}
               </div>
 
               <button
@@ -559,7 +613,7 @@ export function PortfolioSection() {
           aria-modal="true"
           aria-label={
             selectedProject.screenshotCaptions[lang][activeSlideIndex] ??
-            selectedProject.title
+            getProjectTitle(selectedProject)
           }
           className="fixed inset-0 z-[60] flex flex-col items-center justify-center bg-black/90 p-4 backdrop-blur-md sm:p-8"
         >
@@ -587,7 +641,7 @@ export function PortfolioSection() {
               src={getAssetPath(selectedProject.screenshots[activeSlideIndex])}
               alt={
                 selectedProject.screenshotCaptions[lang][activeSlideIndex] ??
-                selectedProject.title
+                getProjectTitle(selectedProject)
               }
               className="max-h-[82vh] w-auto max-w-full object-contain"
             />
