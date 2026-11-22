@@ -397,6 +397,24 @@ export function ServicesAndContactSection() {
             >
               {customBanner.description[lang]}
             </p>
+
+            {customBanner.referenceProject && (
+              <div
+                data-testid="custom-banner-ref"
+                className={`inline-flex items-center gap-1.5 border px-2.5 py-1 font-mono text-[11px] max-w-full ${gridBorder} ${tokens.textMuted}`}
+              >
+                <Layers
+                  aria-hidden="true"
+                  className={`h-3.5 w-3.5 shrink-0 ${tokens.secondaryText}`}
+                />
+                <span className="break-words min-w-0">
+                  Ref:{" "}
+                  <strong className={`font-semibold ${tokens.textPrimary}`}>
+                    {customBanner.referenceProject}
+                  </strong>
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full md:w-auto shrink-0">

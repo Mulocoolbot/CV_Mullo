@@ -185,6 +185,17 @@ export const skillsData: SkillItem[] = [
     },
   },
   {
+    id: "llm-ai-integration",
+    name: "LLM & AI Integration",
+    category: "ai-data",
+    categoryLabel: { id: "AI & Data (R&D)", en: "AI & Data (R&D)" },
+    levelBadge: { id: "Active R&D", en: "Active R&D" },
+    description: {
+      id: "Orkestrasi multi-model LLM (Groq AI), pencarian bukti Tavily & Jina, serta semantic reranking.",
+      en: "Multi-model LLM orchestration (Groq AI), Tavily & Jina evidence retrieval, and semantic reranking.",
+    },
+  },
+  {
     id: "agile-blackbox",
     name: "Agile & Black Box Testing",
     category: "workflow-soft",
@@ -210,6 +221,20 @@ export const skillsData: SkillItem[] = [
     description: {
       id: "Kontrol versi, penandaan rilis, dan perancangan antarmuka.",
       en: "Version control, release tagging, and UI prototyping.",
+    },
+  },
+  {
+    id: "github-actions-cicd",
+    name: "GitHub Actions & CI/CD",
+    category: "workflow-soft",
+    categoryLabel: {
+      id: "Metode & Kepemimpinan",
+      en: "Workflow & Leadership",
+    },
+    levelBadge: { id: "Workflow", en: "Workflow" },
+    description: {
+      id: "Otomasi lint, typecheck, pengujian, dan deployment berkelanjutan ke Vercel serta GitHub Pages.",
+      en: "Automated linting, typechecking, testing, and continuous deployment to Vercel and GitHub Pages.",
     },
   },
   {

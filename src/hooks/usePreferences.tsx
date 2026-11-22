@@ -6,8 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
-  useRef,
-  useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 import type { AccentColor, Language, ThemeMode } from "@/types/cv";
@@ -114,46 +113,97 @@ function isValidTheme(value: unknown): value is ThemeMode {
   return value === "dark" || value === "light";
 }
 
-function persistPreferences(state: PreferencesState) {
+const listeners = new Set<() => void>();
+let memoryFallbackPrefs: PreferencesState | null = null;
+let cachedRaw: string | null | undefined;
+let cachedSnapshot: PreferencesState = DEFAULT_PREFERENCES;
+
+function emitPreferencesChange() {
+  for (const listener of listeners) {
+    listener();
+  }
+}
+
+function subscribePreferences(listener: () => void) {
+  listeners.add(listener);
+  const handleStorage = (event: StorageEvent) => {
+    if (event.key === null || event.key === STORAGE_KEY) {
+      cachedRaw = undefined;
+      listener();
+    }
+  };
+  if (typeof window !== "undefined") {
+    window.addEventListener("storage", handleStorage);
+  }
+  return () => {
+    listeners.delete(listener);
+    if (typeof window !== "undefined") {
+      window.removeEventListener("storage", handleStorage);
+    }
+  };
+}
+
+function getPreferencesSnapshot(): PreferencesState {
+  if (typeof window === "undefined") {
+    return DEFAULT_PREFERENCES;
+  }
   try {
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({ lang: state.lang, theme: state.theme })
-    );
-  } catch {}
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (raw === null) {
+      if (memoryFallbackPrefs !== null) {
+        return memoryFallbackPrefs;
+      }
+      cachedRaw = null;
+      cachedSnapshot = DEFAULT_PREFERENCES;
+      return cachedSnapshot;
+    }
+    memoryFallbackPrefs = null;
+    if (raw === cachedRaw) {
+      return cachedSnapshot;
+    }
+    const parsed = JSON.parse(raw) as Partial<PreferencesState>;
+    const hydrated: PreferencesState = {
+      lang: isValidLanguage(parsed.lang)
+        ? parsed.lang
+        : DEFAULT_PREFERENCES.lang,
+      theme: isValidTheme(parsed.theme)
+        ? parsed.theme
+        : DEFAULT_PREFERENCES.theme,
+    };
+    cachedRaw = raw;
+    cachedSnapshot = hydrated;
+    return cachedSnapshot;
+  } catch {
+    return memoryFallbackPrefs ?? DEFAULT_PREFERENCES;
+  }
+}
+
+function getServerPreferencesSnapshot(): PreferencesState {
+  return DEFAULT_PREFERENCES;
+}
+
+function persistPreferences(state: PreferencesState) {
+  const serialized = JSON.stringify({ lang: state.lang, theme: state.theme });
+  try {
+    window.localStorage.setItem(STORAGE_KEY, serialized);
+    memoryFallbackPrefs = null;
+    cachedRaw = serialized;
+    cachedSnapshot = state;
+  } catch {
+    memoryFallbackPrefs = state;
+  }
 }
 
 export function PreferencesProvider({ children }: { children: ReactNode }) {
   const existingContext = useContext(PreferencesContext);
-  const [prefs, setPrefs] = useState<PreferencesState>(DEFAULT_PREFERENCES);
-  const isHydratedRef = useRef(false);
+  const prefs = useSyncExternalStore(
+    subscribePreferences,
+    getPreferencesSnapshot,
+    getServerPreferencesSnapshot
+  );
 
   useEffect(() => {
     if (existingContext) return;
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as Partial<PreferencesState>;
-        const hydrated: PreferencesState = {
-          lang: isValidLanguage(parsed.lang)
-            ? parsed.lang
-            : DEFAULT_PREFERENCES.lang,
-          theme: isValidTheme(parsed.theme)
-            ? parsed.theme
-            : DEFAULT_PREFERENCES.theme,
-        };
-        setPrefs(hydrated);
-        isHydratedRef.current = true;
-        return;
-      }
-    } catch {}
-
-    isHydratedRef.current = true;
-    persistPreferences(DEFAULT_PREFERENCES);
-  }, [existingContext]);
-
-  useEffect(() => {
-    if (existingContext || !isHydratedRef.current) return;
     persistPreferences(prefs);
     const root = document.documentElement;
     root.dataset.theme = prefs.theme;
@@ -162,41 +212,37 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
   }, [existingContext, prefs]);
 
   const setLang = useCallback((lang: Language) => {
-    setPrefs((prev) => {
-      const next = { ...prev, lang };
-      persistPreferences(next);
-      return next;
-    });
+    const current = getPreferencesSnapshot();
+    const next: PreferencesState = { ...current, lang };
+    persistPreferences(next);
+    emitPreferencesChange();
   }, []);
 
   const toggleLanguage = useCallback(() => {
-    setPrefs((prev) => {
-      const next: PreferencesState = {
-        ...prev,
-        lang: prev.lang === "id" ? "en" : "id",
-      };
-      persistPreferences(next);
-      return next;
-    });
+    const current = getPreferencesSnapshot();
+    const next: PreferencesState = {
+      ...current,
+      lang: current.lang === "id" ? "en" : "id",
+    };
+    persistPreferences(next);
+    emitPreferencesChange();
   }, []);
 
   const setTheme = useCallback((theme: ThemeMode) => {
-    setPrefs((prev) => {
-      const next = { ...prev, theme };
-      persistPreferences(next);
-      return next;
-    });
+    const current = getPreferencesSnapshot();
+    const next: PreferencesState = { ...current, theme };
+    persistPreferences(next);
+    emitPreferencesChange();
   }, []);
 
   const toggleTheme = useCallback(() => {
-    setPrefs((prev) => {
-      const next: PreferencesState = {
-        ...prev,
-        theme: prev.theme === "dark" ? "light" : "dark",
-      };
-      persistPreferences(next);
-      return next;
-    });
+    const current = getPreferencesSnapshot();
+    const next: PreferencesState = {
+      ...current,
+      theme: current.theme === "dark" ? "light" : "dark",
+    };
+    persistPreferences(next);
+    emitPreferencesChange();
   }, []);
 
   const noop = useCallback(() => {}, []);

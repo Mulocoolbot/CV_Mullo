@@ -128,6 +128,7 @@ export interface CustomConsultationBanner {
   price: LocalizedText;
   startingPrice: LocalizedText;
   description: LocalizedText;
+  referenceProject?: string;
   whatsappMessage: LocalizedText;
 }
 
